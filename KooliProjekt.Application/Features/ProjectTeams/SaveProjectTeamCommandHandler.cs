@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KooliProjekt.Application.Features.Projects
+namespace KooliProjekt.Application.Features.ProjectTeams
 {
     public class SaveProjectTeamCommandHandler : IRequestHandler<SaveProjectTeamCommand, OperationResult>
     {
@@ -23,8 +23,19 @@ namespace KooliProjekt.Application.Features.Projects
         {
             var result = new OperationResult();
 
-            // Implement your logic for saving the project team here
-            // Example: Validate, add, or update ProjectTeam entities
+            var team = new ProjectTeam();
+            if (request.Id == 0)
+            {
+                await _dbContext.ProjectTeams.AddAsync(team, cancellationToken);
+            }
+            else
+            {
+                team = await _dbContext.ProjectTeams.FindAsync(new object[] { request.Id }, cancellationToken);
+            }
+
+            // Ülejäänud projekti propertid ka
+            team.ProjectId = request.ProjectId;
+            team.UserId = request.UserId;
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 

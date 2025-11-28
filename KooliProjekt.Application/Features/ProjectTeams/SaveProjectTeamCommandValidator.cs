@@ -1,17 +1,21 @@
 ﻿using FluentValidation;
 using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Features.Projects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KooliProjekt.Application.Features.Projects
+namespace KooliProjekt.Application.Features.ProjectTeams
 {
     public class SaveProjectTeamCommandValidator : AbstractValidator<SaveProjectCommand>
     {
         public SaveProjectTeamCommandValidator(ApplicationDbContext context)
         {
+            // ProjectId suurem või võrdne number nulliga
+            // UserId suurem või võrdne number nulliga
+
             RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Name is required")
                 .MaximumLength(50).WithMessage("Name cannot exceed 50 characters")

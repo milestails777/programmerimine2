@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KooliProjekt.Application.Features.Projects
+namespace KooliProjekt.Application.Features.ProjectTeams
 {
     public class ProjectTeamQueryHandler : IRequestHandler<ProjectTeamQuery, OperationResult<PagedResult<ProjectTeam>>>
     {

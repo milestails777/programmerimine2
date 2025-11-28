@@ -7,11 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KooliProjekt.Application.Features.Projects
+namespace KooliProjekt.Application.Features.ProjectTeams
 {
     public class SaveProjectTeamCommand : IRequest<OperationResult>, ITransactional
     {
+        public int Id { get; set; }
         public int ProjectId { get; set; }
-        public string User { get; set; }
+        public int UserId { get; set; }
     }
 }

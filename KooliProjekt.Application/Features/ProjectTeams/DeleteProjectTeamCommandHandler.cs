@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KooliProjekt.Application.Features.Projects
+namespace KooliProjekt.Application.Features.ProjectTeams
 {
     public class DeleteProjectTeamCommandHandler : IRequestHandler<DeleteProjectTeamCommand, OperationResult>
     {
@@ -23,14 +23,14 @@ namespace KooliProjekt.Application.Features.Projects
         {
             var result = new OperationResult();
 
-            var project = await _dbContext.Projects.FindAsync(new object[] { request.Id }, cancellationToken);
-            if (project == null)
+            var team = await _dbContext.ProjectTeams.FindAsync(new object[] { request.Id }, cancellationToken);
+            if (team == null)
             {
-                result.AddError("Project not found.");
+                result.AddError("Project team not found.");
                 return result;
             }
 
-            _dbContext.Projects.Remove(project);
+            _dbContext.ProjectTeams.Remove(team);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             return result;

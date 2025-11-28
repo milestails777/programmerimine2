@@ -27,8 +27,16 @@ namespace KooliProjekt.WebApi.Controllers
             return Result(result);
         }
 
-        // Get project by id
-        // Save project
+        [HttpGet]
+        [Route("Get")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var query = new GetProjectsQuery { Id = id };
+            var response = await _mediator.Send(query);
+
+            return Result(response);
+        }
+
 
         [HttpPost]
         [Route("Save")]
