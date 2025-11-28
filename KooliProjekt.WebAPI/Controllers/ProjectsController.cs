@@ -30,6 +30,15 @@ namespace KooliProjekt.WebApi.Controllers
         // Get project by id
         // Save project
 
+        [HttpPost]
+        [Route("Save")]
+        public async Task<IActionResult> Save(SaveProjectCommand command)
+        {
+            var response = await _mediator.Send(command);
+
+            return Result(response);
+        }
+
         [HttpDelete]
         [Route("Delete")]
         public async Task<IActionResult> Delete(DeleteProjectCommand command)

@@ -12,7 +12,7 @@ namespace KooliProjekt.Application.Features.Projects
     {
         public SaveProjectCommandValidator(ApplicationDbContext context)
         {
-            RuleFor(x => x.Title)
+            RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("Title is required")
                 .MaximumLength(50).WithMessage("Title cannot exceed 50 characters")
                 // Oma loogikaga valideerimise reegel
