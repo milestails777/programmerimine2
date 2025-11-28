@@ -1,5 +1,4 @@
 ﻿using KooliProjekt.Application.Data;
-using KooliProjekt.Application.Data.Repositories;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
 using System;
@@ -13,26 +12,31 @@ namespace KooliProjekt.Application.Features.Projects
 {
     public class SaveProjectCommandHandler : IRequestHandler<SaveProjectCommand, OperationResult>
     {
-        private readonly IProjectRepository _projectRepository;
+        private readonly ApplicationDbContext _dbContext;
 
-        public SaveProjectCommandHandler(IProjectRepository projectRepository)
+        public SaveProjectCommandHandler(ApplicationDbContext dbContext)
         {
-            _projectRepository = projectRepository;
+            _dbContext = dbContext;
         }
 
         public async Task<OperationResult> Handle(SaveProjectCommand request, CancellationToken cancellationToken)
         {
             var result = new OperationResult();
 
-            var list = new Project();
-            if (request.Id != 0)
+            var project = new Project();
+            if(request.Id == 0)
             {
-                list = await _projectRepository.GetByIdAsync(request.Id);
+                await _dbContext.Projects.AddAsync(project, cancellationToken);
+            }
+            else
+            {
+                project = await _dbContext.Projects.FindAsync(new object[] { request.Id }, cancellationToken);
             }
 
-            list.Name = request.Title;
+            // Ülejäänud projekti propertid ka
+            project.Name = request.Name;
 
-            await _projectRepository.SaveAsync(list);
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return result;
         }

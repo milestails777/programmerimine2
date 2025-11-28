@@ -6,27 +6,34 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Application.Data
 {
-    public static class PagerExtension
+    public static class PagingExtensions
     {
         public static async Task<PagedResult<T>> GetPagedAsync<T>(this IQueryable<T> query, int page, int pageSize)
         {
             page = Math.Max(page, 1);
-            if (pageSize == 0) pageSize = 10;
+            if (pageSize == 0)
+            {
+                pageSize = 10;
+            }
 
-            var totalCount = await query.CountAsync();
+            var result = new PagedResult<T>
+            {
+                CurrentPage = page,
+                PageSize = pageSize,
+                RowCount = await query.CountAsync()
+            };
+
+            var pageCount = (double)result.RowCount / pageSize;
+            result.PageCount = (int)Math.Ceiling(pageCount);
 
             var skip = (page - 1) * pageSize;
-            var items = await query
+            result.Items = await query
                 .Skip(skip)
                 .Take(pageSize)
                 .ToListAsync();
 
-            return new PagedResult<T>(
-                items: items,
-                totalCount: totalCount,
-                page: page,
-                pageSize: pageSize
-            );
+
+            return result;
         }
     }
 }

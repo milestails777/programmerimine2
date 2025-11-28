@@ -27,6 +27,9 @@ namespace KooliProjekt.WebApi.Controllers
             return Result(result);
         }
 
+        // Get project by id
+        // Save project
+
         [HttpDelete]
         [Route("Delete")]
         public async Task<IActionResult> Delete(DeleteProjectCommand command)

@@ -1,18 +1,20 @@
-﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using KooliProjekt.Application.Data;
+﻿using KooliProjekt.Application.Data;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Application.Features.Projects
 {
-    public class GetProjectsQueryHandler : IRequestHandler<GetProjectsQuery, OperationResult<object>>
+    public class GetProjectTeamQueryHandler : IRequestHandler<GetProjectsQuery, OperationResult<object>>
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public GetProjectsQueryHandler(ApplicationDbContext dbContext)
+        public GetProjectTeamQueryHandler(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
