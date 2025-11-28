@@ -58,8 +58,10 @@ namespace KooliProjekt.WebAPI
             using (var scope = app.Services.CreateScope())
             using (var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>())
             {
+                // Apply migrations to ensure the database schema is up-to-date
                 dbContext.Database.Migrate();
 
+                // Seed data
                 var generator = new SeedData(dbContext);
                 generator.Generate();
 
