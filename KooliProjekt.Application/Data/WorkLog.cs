@@ -17,7 +17,7 @@ namespace KooliProjekt.Application.Data
         public int TaskId { get; set; }
 
         [ForeignKey(nameof(TaskId))]
-        public Task Task { get; set; }
+        public ProjectTask Task { get; set; }
 
         [Required]
         [Range(0.01, double.MaxValue, ErrorMessage = "Time spent must be greater than 0.")]

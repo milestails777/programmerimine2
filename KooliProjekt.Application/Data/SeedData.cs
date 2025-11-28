@@ -46,7 +46,7 @@ namespace KooliProjekt.Application.Data
 
                 for (var j = 0; j < 5; j++)
                 {
-                    var task = new Task
+                    var task = new ProjectTask
                     {
                         Name = "Item " + (i + 1) + "." + (j + 1),
                         StartDate = DateTime.Now,
@@ -81,7 +81,7 @@ namespace KooliProjekt.Application.Data
 
                     for (var j = 0; j < 5; j++)
                     {
-                        var task = new Task
+                        var task = new ProjectTask
                         {
                             Name = "Task " + (i + 1) + "." + (j + 1),
                             StartDate = DateTime.Now.AddDays(-j * 5),

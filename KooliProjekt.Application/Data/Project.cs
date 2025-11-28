@@ -8,11 +8,8 @@ using System.Threading.Tasks;
 
 namespace KooliProjekt.Application.Data
 {
-    public class Project
+    public class Project : Entity
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(255)]
         public string Name { get; set; }
@@ -31,7 +28,7 @@ namespace KooliProjekt.Application.Data
         [Range(0, double.MaxValue, ErrorMessage = "Price per hour must be >= 0.")]
         public decimal PricePerHour { get; set; }
 
-        public ICollection<Task> Tasks { get; set; }
+        public ICollection<ProjectTask> Tasks { get; set; }
         public ICollection<ProjectTeam> ProjectTeams { get; set; }
     }
 }
