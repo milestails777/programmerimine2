@@ -11,23 +11,22 @@ namespace KooliProjekt.Application.Data
         public static async Task<PagedResult<T>> GetPagedAsync<T>(this IQueryable<T> query, int page, int pageSize)
         {
             page = Math.Max(page, 1);
-            if (pageSize == 0) pageSize = 10; 
+            if (pageSize == 0) pageSize = 10;
 
-            var result = new PagedResult<T>();
-            result.CurrentPage = page;
-            result.PageSize = pageSize;
-            result.RowCount = await query.CountAsync();
-
-            var pageCount = (double)result.RowCount / pageSize;
-            result.PageCount = (int)Math.Ceiling(pageCount);
+            var totalCount = await query.CountAsync();
 
             var skip = (page - 1) * pageSize;
-            result.Results = await query
+            var items = await query
                 .Skip(skip)
                 .Take(pageSize)
                 .ToListAsync();
 
-            return result;
+            return new PagedResult<T>(
+                items: items,
+                totalCount: totalCount,
+                page: page,
+                pageSize: pageSize
+            );
         }
     }
 }

@@ -1,13 +1,16 @@
-using System.Threading.Tasks;
+using Azure;
 using KooliProjekt.Application.Features.Projects;
+using KooliProjekt.WebAPI.Controllers;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProjectsController : ControllerBase
+    public class ProjectsController : ApiControllerBase
     {
         private readonly IMediator _mediator;
 
@@ -20,10 +23,17 @@ namespace KooliProjekt.WebApi.Controllers
         public async Task<IActionResult> GetProjects([FromQuery] ProjectsQuery query)
         {
             var result = await _mediator.Send(query);
-            if (!result.IsSuccess)
-                return BadRequest(result.Errors);
 
-            return Ok(result.Value);
+            return Result(result);
+        }
+
+        [HttpDelete]
+        [Route("Delete")]
+        public async Task<IActionResult> Delete(DeleteProjectCommand command)
+        {
+            var response = await _mediator.Send(command);
+
+            return Result(response);
         }
     }
 }
