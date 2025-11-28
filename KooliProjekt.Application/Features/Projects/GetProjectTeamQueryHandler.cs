@@ -1,6 +1,7 @@
 ﻿using KooliProjekt.Application.Data;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
+using Microsoft.EntityFrameworkCore; 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,7 @@ namespace KooliProjekt.Application.Features.Projects
                         IsDone = item.Status == "Done"
                     })
                 })
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(cancellationToken); 
 
             return result;
         }
