@@ -8,10 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KooliProjekt.Application.Features.ProjectTeams
+namespace KooliProjekt.Application.Features.ProjectTasks
 {
     
-    public class ProjectTaskQuery : IRequest<OperationResult<PagedResult<ProjectTeam>>>
+    public class ProjectTaskQuery : IRequest<OperationResult<PagedResult<ProjectTask>>>
     {
         public int Page { get; set; } = 1;
         public int PageSize { get; set; } = 10;

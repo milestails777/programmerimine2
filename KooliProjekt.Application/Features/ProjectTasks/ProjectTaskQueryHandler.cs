@@ -1,4 +1,5 @@
 ﻿using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Features.ProjectTeams;
 using KooliProjekt.Application.Infrastructure.Paging;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
@@ -10,9 +11,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KooliProjekt.Application.Features.ProjectTeams
+namespace KooliProjekt.Application.Features.ProjectTasks
 {
-    public class ProjectTaskQueryHandler : IRequestHandler<ProjectTaskQuery, OperationResult<PagedResult<ProjectTeam>>>
+    public class ProjectTaskQueryHandler : IRequestHandler<ProjectTaskQuery, OperationResult<PagedResult<ProjectTask>>>
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -21,12 +22,12 @@ namespace KooliProjekt.Application.Features.ProjectTeams
             _dbContext = dbContext;
         }
 
-        public async Task<OperationResult<PagedResult<ProjectTeam>>> Handle(ProjectTaskQuery request, CancellationToken cancellationToken)
+        public async Task<OperationResult<PagedResult<ProjectTask>>> Handle(ProjectTaskQuery request, CancellationToken cancellationToken)
         {
-            var result = new OperationResult<PagedResult<ProjectTeam>>();
+            var result = new OperationResult<PagedResult<ProjectTask>>();
 
             result.Value = await _dbContext
-                .ProjectTeams
+                .ProjectTasks
                 .Include(pt => pt.Project)
                 .Include(pt => pt.User)
                 .AsNoTracking()

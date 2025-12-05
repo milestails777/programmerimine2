@@ -1,6 +1,6 @@
 using Azure;
 using KooliProjekt.Application.Features.Projects;
-using KooliProjekt.Application.Features.ProjectTeams;
+using KooliProjekt.Application.Features.ProjectTasks;
 using KooliProjekt.WebAPI.Controllers;
 using MediatR;
 using Microsoft.AspNetCore.Http;
