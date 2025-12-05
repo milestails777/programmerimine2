@@ -23,19 +23,19 @@ namespace KooliProjekt.Application.Features.ProjectWorkLogs
         {
             var result = new OperationResult();
 
-            var team = new ProjectTeam();
+            var workLog = new ProjectWorkLog();
             if (request.Id == 0)
             {
-                await _dbContext.ProjectTeams.AddAsync(team, cancellationToken);
+                await _dbContext.ProjectWorkLogs.AddAsync(workLog, cancellationToken);
             }
             else
             {
-                team = await _dbContext.ProjectTeams.FindAsync(new object[] { request.Id }, cancellationToken);
+                workLog = await _dbContext.ProjectWorkLogs.FindAsync(new object[] { request.Id }, cancellationToken);
             }
 
             // Ülejäänud projekti propertid ka
-            team.ProjectId = request.ProjectId;
-            team.UserId = request.UserId;
+            workLog.TaskId = request.TaskId;
+            workLog.UserId = request.UserId;
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 
