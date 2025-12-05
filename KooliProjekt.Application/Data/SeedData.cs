@@ -53,7 +53,7 @@ namespace KooliProjekt.Application.Data
                         Status = "Not Started",
                         Project = project
                     };
-                    _dbContext.Tasks.Add(task);
+                    _dbContext.ProjectTasks.Add(task);
                 }
             }
 
@@ -89,7 +89,7 @@ namespace KooliProjekt.Application.Data
                             Project = project,
                             Description = "Description for Task " + (i + 1) + "." + (j + 1)
                         };
-                        _dbContext.Tasks.Add(task);
+                        _dbContext.ProjectTasks.Add(task);
 
                         for (var k = 0; k < 2; k++)
                         {
@@ -101,13 +101,13 @@ namespace KooliProjekt.Application.Data
                                 UserId = k + 1,
                                 Description = "Work log for Task " + (i + 1) + "." + (j + 1)
                             };
-                            _dbContext.WorkLogs.Add(workLog);
+                            _dbContext.ProjectWorkLogs.Add(workLog);
                         }
                     }
                 }
             }
 
-            if (!_dbContext.Users.Any())
+            if (!_dbContext.ProjectUsers.Any())
             {
                 for (var i = 0; i < 10; i++)
                 {
@@ -118,7 +118,7 @@ namespace KooliProjekt.Application.Data
                         Phone = "+123456789" + i,
                         Email = "user" + (i + 1) + "@example.com"
                     };
-                    _dbContext.Users.Add(user);
+                    _dbContext.ProjectUsers.Add(user);
                 }
             }
 
