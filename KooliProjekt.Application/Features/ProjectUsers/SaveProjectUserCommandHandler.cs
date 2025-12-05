@@ -1,4 +1,6 @@
 ﻿using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Data.Repositories;
+using KooliProjekt.Application.Features.ProjectWorkLogs;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
 using System;
@@ -12,9 +14,9 @@ namespace KooliProjekt.Application.Features.ProjectUsers
 {
     public class SaveProjectUserCommandHandler : IRequestHandler<SaveProjectUserCommand, OperationResult>
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IProjectUserRepository _dbContext;
 
-        public SaveProjectUserCommandHandler(ApplicationDbContext dbContext)
+        public SaveProjectUserCommandHandler(IProjectUserRepository dbContext)
         {
             _dbContext = dbContext;
         }
@@ -23,21 +25,26 @@ namespace KooliProjekt.Application.Features.ProjectUsers
         {
             var result = new OperationResult();
 
-            var user = new ProjectUser();
+            ProjectUser user;
             if (request.Id == 0)
             {
-                await _dbContext.ProjectUsers.AddAsync(user, cancellationToken);
+                user = new ProjectUser();
+                user.Id = request.UserId;
+
+
+                await _dbContext.SaveAsync(user);
             }
             else
             {
-               user = await _dbContext.ProjectUsers.FindAsync(new object[] { request.Id }, cancellationToken);
+                user = await _dbContext.GetByIdAsync(request.Id);
+                if (user != null)
+                {
+                    user.Id = request.UserId;
+
+
+                    await _dbContext.SaveAsync(user);
+                }
             }
-
-            // Ülejäänud projekti propertid ka
-            user.Id = request.UserId;
-            user.Id = request.UserId;
-
-            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return result;
         }

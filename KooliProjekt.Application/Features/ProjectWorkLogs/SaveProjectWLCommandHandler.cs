@@ -1,4 +1,5 @@
 ﻿using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Data.Repositories;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
 using System;
@@ -12,9 +13,9 @@ namespace KooliProjekt.Application.Features.ProjectWorkLogs
 {
     public class SaveProjectWLCommandHandler : IRequestHandler<SaveProjectWLCommand, OperationResult>
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IProjectWLRepository _dbContext;
 
-        public SaveProjectWLCommandHandler(ApplicationDbContext dbContext)
+        public SaveProjectWLCommandHandler(IProjectWLRepository dbContext)
         {
             _dbContext = dbContext;
         }
@@ -23,21 +24,28 @@ namespace KooliProjekt.Application.Features.ProjectWorkLogs
         {
             var result = new OperationResult();
 
-            var workLog = new ProjectWorkLog();
+            ProjectWorkLog workLog;
             if (request.Id == 0)
             {
-                await _dbContext.ProjectWorkLogs.AddAsync(workLog, cancellationToken);
+                workLog = new ProjectWorkLog();
+                workLog.TaskId = request.TaskId;
+                workLog.UserId = request.UserId;
+                
+
+                await _dbContext.SaveAsync(workLog);
             }
             else
             {
-                workLog = await _dbContext.ProjectWorkLogs.FindAsync(new object[] { request.Id }, cancellationToken);
+                workLog = await _dbContext.GetByIdAsync(request.Id);
+                if (workLog != null)
+                {
+                    workLog.TaskId = request.TaskId;
+                    workLog.UserId = request.UserId;
+                    
+
+                    await _dbContext.SaveAsync(workLog);
+                }
             }
-
-            // Ülejäänud projekti propertid ka
-            workLog.TaskId = request.TaskId;
-            workLog.UserId = request.UserId;
-
-            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return result;
         }

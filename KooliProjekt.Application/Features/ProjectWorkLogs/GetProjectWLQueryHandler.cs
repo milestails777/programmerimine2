@@ -1,4 +1,5 @@
 ﻿using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Data.Repositories;
 using KooliProjekt.Application.Features.Projects;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
@@ -14,9 +15,9 @@ namespace KooliProjekt.Application.Features.ProjectWorkLogs
 {
     public class GetProjectWLQueryHandler : IRequestHandler<GetProjectsQuery, OperationResult<object>>
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IProjectWLRepository _dbContext;
 
-        public GetProjectWLQueryHandler(ApplicationDbContext dbContext)
+        public GetProjectWLQueryHandler(IProjectWLRepository dbContext)
         {
             _dbContext = dbContext;
         }
@@ -24,17 +25,22 @@ namespace KooliProjekt.Application.Features.ProjectWorkLogs
         public async Task<OperationResult<object>> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
         {
             var result = new OperationResult<object>();
-            result.Value = await _dbContext
-                .ProjectTeams
-                .Where(list => list.Id == request.Id)
-                .Select(list => new // Anonymous object
-                {
-                    Id = list.Id,
-                    ProjectId = list.ProjectId,
-                    ProjectName = list.Project.Name,
-                    // veel andmeid project team kohta
-                })
-                .FirstOrDefaultAsync(cancellationToken); 
+            var projectWorkLog = await _dbContext.GetByIdAsync(request.Id);
+
+            if (projectWorkLog == null)
+            {
+                result.AddError("Project work log not found.");
+                return result;
+            }
+
+            
+            result.Value = new
+            {
+                Id = projectWorkLog.Id,
+                TaskId = projectWorkLog.TaskId,
+                TaskName = projectWorkLog.Task?.Name,
+                
+            };
 
             return result;
         }

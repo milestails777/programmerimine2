@@ -1,4 +1,5 @@
 ﻿using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Data.Repositories;
 using KooliProjekt.Application.Features.Projects;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
@@ -14,9 +15,9 @@ namespace KooliProjekt.Application.Features.ProjectTeams
 {
     public class GetProjectTeamQueryHandler : IRequestHandler<GetProjectsQuery, OperationResult<object>>
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IProjectTeamRepository _dbContext;
 
-        public GetProjectTeamQueryHandler(ApplicationDbContext dbContext)
+        public GetProjectTeamQueryHandler(IProjectTeamRepository dbContext)
         {
             _dbContext = dbContext;
         }
@@ -24,17 +25,22 @@ namespace KooliProjekt.Application.Features.ProjectTeams
         public async Task<OperationResult<object>> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
         {
             var result = new OperationResult<object>();
-            result.Value = await _dbContext
-                .ProjectTeams
-                .Where(list => list.Id == request.Id)
-                .Select(list => new // Anonymous object
+            var team = await _dbContext.GetByIdAsync(request.Id);
+
+            result.Value = new // Anonymous object
+            {
+                Id = team.Id,
+                Title = team.User?.Name,
+                Items = new[]
                 {
-                    Id = list.Id,
-                    ProjectId = list.ProjectId,
-                    ProjectName = list.Project.Name,
-                    // veel andmeid project team kohta
-                })
-                .FirstOrDefaultAsync(cancellationToken); 
+                    new
+                    {
+                        Id = team.User?.Id,
+                        Title = team.User?.Name,
+                        IsDone = false
+                    }
+                }
+            };
 
             return result;
         }

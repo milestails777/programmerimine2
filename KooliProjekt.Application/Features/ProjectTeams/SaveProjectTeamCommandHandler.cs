@@ -1,4 +1,5 @@
 ﻿using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Data.Repositories;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
 using System;
@@ -12,9 +13,9 @@ namespace KooliProjekt.Application.Features.ProjectTeams
 {
     public class SaveProjectTeamCommandHandler : IRequestHandler<SaveProjectTeamCommand, OperationResult>
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IProjectTeamRepository _dbContext;
 
-        public SaveProjectTeamCommandHandler(ApplicationDbContext dbContext)
+        public SaveProjectTeamCommandHandler(IProjectTeamRepository dbContext)
         {
             _dbContext = dbContext;
         }
@@ -23,21 +24,27 @@ namespace KooliProjekt.Application.Features.ProjectTeams
         {
             var result = new OperationResult();
 
-            var team = new ProjectTeam();
+            ProjectTeam team;
             if (request.Id == 0)
             {
-                await _dbContext.ProjectTeams.AddAsync(team, cancellationToken);
+                team = new ProjectTeam
+                {
+                    ProjectId = request.ProjectId,
+                    UserId = request.UserId
+                };
+                await _dbContext.SaveAsync(team);
             }
             else
             {
-                team = await _dbContext.ProjectTeams.FindAsync(new object[] { request.Id }, cancellationToken);
+                team = await _dbContext.GetByIdAsync(request.Id);
+                if (team != null)
+                {
+                    team.ProjectId = request.ProjectId;
+                    team.UserId = request.UserId;
+                    await _dbContext.SaveAsync(team);
+                }
+                
             }
-
-            // Ülejäänud projekti propertid ka
-            team.ProjectId = request.ProjectId;
-            team.UserId = request.UserId;
-
-            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return result;
         }

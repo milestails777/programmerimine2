@@ -1,4 +1,5 @@
 ﻿using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Data.Repositories;
 using KooliProjekt.Application.Features.Projects;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
@@ -12,31 +13,37 @@ using System.Threading.Tasks;
 
 namespace KooliProjekt.Application.Features.ProjectUsers
 {
-    public class GetProjectUserQueryHandler : IRequestHandler<GetProjectsQuery, OperationResult<object>>
+    public class GetProjectUserQueryHandler : IRequestHandler<GetProjectUserQuery, OperationResult<object>>
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IProjectUserRepository _dbContext;
 
-        public GetProjectUserQueryHandler(ApplicationDbContext dbContext)
+        public GetProjectUserQueryHandler(IProjectUserRepository dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<OperationResult<object>> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
+        public async Task<OperationResult<object>> Handle(GetProjectUserQuery request, CancellationToken cancellationToken)
         {
             var result = new OperationResult<object>();
-            result.Value = await _dbContext
-                .ProjectTeams
-                .Where(list => list.Id == request.Id)
-                .Select(list => new // Anonymous object
+            var user = await _dbContext.GetByIdAsync(request.Id);
+
+            result.Value = new // Anonymous object
+            {
+                Id = user.Id,
+                Title = user.Phone,
+                Items = new[]
                 {
-                    Id = list.Id,
-                    ProjectId = list.ProjectId,
-                    ProjectName = list.Project.Name,
-                    // veel andmeid project team kohta
-                })
-                .FirstOrDefaultAsync(cancellationToken); 
+                    new
+                    {
+                        Id = user.Email,
+                        Title = user.Name,
+                        IsDone = false
+                    }
+                }
+            };
 
             return result;
         }
     }
 }
+  

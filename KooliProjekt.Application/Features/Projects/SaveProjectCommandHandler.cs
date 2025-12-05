@@ -1,4 +1,5 @@
 ﻿using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Data.Repositories;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
 using System;
@@ -12,31 +13,38 @@ namespace KooliProjekt.Application.Features.Projects
 {
     public class SaveProjectCommandHandler : IRequestHandler<SaveProjectCommand, OperationResult>
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IProjectRepository _projectRepository;
 
-        public SaveProjectCommandHandler(ApplicationDbContext dbContext)
+        public SaveProjectCommandHandler(IProjectRepository projectRepository)
         {
-            _dbContext = dbContext;
+            _projectRepository = projectRepository;
         }
 
         public async Task<OperationResult> Handle(SaveProjectCommand request, CancellationToken cancellationToken)
         {
             var result = new OperationResult();
 
-            var project = new Project();
-            if(request.Id == 0)
+            Project project;
+            if (request.Id == 0)
             {
-                await _dbContext.Projects.AddAsync(project, cancellationToken);
+                project = new Project
+                {
+                    Name = request.Name
+                };
+                await _projectRepository.SaveAsync(project);
             }
             else
             {
-                project = await _dbContext.Projects.FindAsync(new object[] { request.Id }, cancellationToken);
+                project = await _projectRepository.GetByIdAsync(request.Id);
+                if (project == null)
+                {
+                    result.AddError("Project not found.");
+                    return result;
+                }
+
+                project.Name = request.Name;
+                await _projectRepository.SaveAsync(project);
             }
-
-            // Ülejäänud projekti propertid ka
-            project.Name = request.Name;
-
-            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return result;
         }

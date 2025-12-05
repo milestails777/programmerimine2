@@ -1,4 +1,6 @@
 ﻿using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Data.Repositories;
+using KooliProjekt.Application.Features.ProjectTeams;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
 using System;
@@ -12,9 +14,9 @@ namespace KooliProjekt.Application.Features.ProjectTasks
 {
     public class SaveProjectTaskCommandHandler : IRequestHandler<SaveProjectTaskCommand, OperationResult>
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IProjectTaskRepository _dbContext;
 
-        public SaveProjectTaskCommandHandler(ApplicationDbContext dbContext)
+        public SaveProjectTaskCommandHandler(IProjectTaskRepository dbContext)
         {
             _dbContext = dbContext;
         }
@@ -23,21 +25,27 @@ namespace KooliProjekt.Application.Features.ProjectTasks
         {
             var result = new OperationResult();
 
-            var task = new ProjectTask();
+            ProjectTask task;
             if (request.Id == 0)
             {
-                await _dbContext.ProjectTasks.AddAsync(task, cancellationToken);
+                task = new ProjectTask
+                {
+                    ProjectId = request.ProjectId,
+                    UserId = request.UserId
+                };
+                await _dbContext.SaveAsync(task);
             }
             else
             {
-                task = await _dbContext.ProjectTasks.FindAsync(new object[] { request.Id }, cancellationToken);
+                task = await _dbContext.GetByIdAsync(request.Id);
+                if (task != null)
+                {
+                    task.ProjectId = request.ProjectId;
+                    task.UserId = request.UserId;
+                    await _dbContext.SaveAsync(task);
+                }
+
             }
-
-            // Ülejäänud projekti propertid ka
-            task.ProjectId = request.ProjectId;
-            task.UserId = request.UserId;
-
-            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return result;
         }
