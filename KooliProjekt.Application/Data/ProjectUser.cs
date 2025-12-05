@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace KooliProjekt.Application.Data
 {
-    public class ProjectUser
+    public class ProjectUser : Entity
     {
         [Key]
         public int Id { get; set; }

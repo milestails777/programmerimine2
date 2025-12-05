@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace KooliProjekt.Application.Data
 {
-    public abstract class Entity
-    {
-        public int Id { get; set; }
-    }
+    //public abstract class Entity
+    //{
+    //    public int Id { get; set; }
+    //}
 
     public class ProjectTask : Entity
     {
