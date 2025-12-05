@@ -9,11 +9,13 @@ using System.Threading.Tasks;
 
 namespace KooliProjekt.Application.Data
 {
-    public class ProjectTask
+    public abstract class Entity
     {
-        [Key]
         public int Id { get; set; }
+    }
 
+    public class ProjectTask : Entity
+    {
         [Required]
         public int ProjectId { get; set; }
 
