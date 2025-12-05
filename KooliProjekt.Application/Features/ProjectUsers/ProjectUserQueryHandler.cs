@@ -10,27 +10,27 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KooliProjekt.Application.Features.ProjectTeams
+namespace KooliProjekt.Application.Features.ProjectUsers
 {
-    public class ProjectWLQueryHandler : IRequestHandler<ProjectTeamQuery, OperationResult<PagedResult<ProjectTeam>>>
+    public class ProjectUserQueryHandler : IRequestHandler<ProjectUserQuery, OperationResult<PagedResult<ProjectUser>>>
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public ProjectWLQueryHandler(ApplicationDbContext dbContext)
+        public ProjectUserQueryHandler(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<OperationResult<PagedResult<ProjectTeam>>> Handle(ProjectTeamQuery request, CancellationToken cancellationToken)
+        public async Task<OperationResult<PagedResult<ProjectUser>>> Handle(ProjectUserQuery request, CancellationToken cancellationToken)
         {
-            var result = new OperationResult<PagedResult<ProjectTeam>>();
+            var result = new OperationResult<PagedResult<ProjectUser>>();
 
             result.Value = await _dbContext
-                .ProjectTeams
-                .Include(pt => pt.Project)
-                .Include(pt => pt.User)
+                .ProjectUsers
+                .Include(pt => pt.Id)
+                .Include(pt => pt.Phone)
                 .AsNoTracking()
-                .OrderBy(pt => pt.ProjectId)
+                .OrderBy(pt => pt.Name)
                 .GetPagedAsync(request.Page, request.PageSize);
 
             return result;

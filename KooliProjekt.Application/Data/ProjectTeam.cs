@@ -21,7 +21,7 @@ namespace KooliProjekt.Application.Data
             public Project Project { get; set; }
 
             [ForeignKey(nameof(UserId))]
-            public User User { get; set; }
+            public ProjectUser User { get; set; }
 
         }
 }

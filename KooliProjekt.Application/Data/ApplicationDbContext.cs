@@ -11,8 +11,8 @@ namespace KooliProjekt.Application.Data
 
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectTask> ProjectTasks { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<WorkLog> WorkLogs { get; set; }
+        public DbSet<ProjectUser> ProjectUsers { get; set; }
+        public DbSet<ProjectWorkLog> ProjectWorkLogs { get; set; }
         public DbSet<ProjectTeam> ProjectTeams { get; set; }
 
     }

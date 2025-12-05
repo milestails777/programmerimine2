@@ -10,9 +10,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KooliProjekt.Application.Features.ProjectTeams
+namespace KooliProjekt.Application.Features.ProjectWorkLogs
 {
-    public class ProjectWLQueryHandler : IRequestHandler<ProjectTeamQuery, OperationResult<PagedResult<ProjectTeam>>>
+    public class ProjectWLQueryHandler : IRequestHandler<ProjectWLQuery, OperationResult<PagedResult<ProjectWorkLog>>>
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -21,16 +21,16 @@ namespace KooliProjekt.Application.Features.ProjectTeams
             _dbContext = dbContext;
         }
 
-        public async Task<OperationResult<PagedResult<ProjectTeam>>> Handle(ProjectTeamQuery request, CancellationToken cancellationToken)
+        public async Task<OperationResult<PagedResult<ProjectWorkLog>>> Handle(ProjectWLQuery request, CancellationToken cancellationToken)
         {
-            var result = new OperationResult<PagedResult<ProjectTeam>>();
+            var result = new OperationResult<PagedResult<ProjectWorkLog>>();
 
             result.Value = await _dbContext
-                .ProjectTeams
-                .Include(pt => pt.Project)
+                .ProjectWorkLogs
+                .Include(pt => pt.Date)
                 .Include(pt => pt.User)
                 .AsNoTracking()
-                .OrderBy(pt => pt.ProjectId)
+                .OrderBy(pt => pt.TaskId)
                 .GetPagedAsync(request.Page, request.PageSize);
 
             return result;

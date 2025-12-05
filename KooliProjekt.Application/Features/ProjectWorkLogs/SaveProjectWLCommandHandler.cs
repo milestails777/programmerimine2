@@ -8,34 +8,34 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KooliProjekt.Application.Features.ProjectTasks
+namespace KooliProjekt.Application.Features.ProjectWorkLogs
 {
-    public class SaveProjectTaskCommandHandler : IRequestHandler<SaveProjectTaskCommand, OperationResult>
+    public class SaveProjectWLCommandHandler : IRequestHandler<SaveProjectWLCommand, OperationResult>
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public SaveProjectTaskCommandHandler(ApplicationDbContext dbContext)
+        public SaveProjectWLCommandHandler(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<OperationResult> Handle(SaveProjectTaskCommand request, CancellationToken cancellationToken)
+        public async Task<OperationResult> Handle(SaveProjectWLCommand request, CancellationToken cancellationToken)
         {
             var result = new OperationResult();
 
-            var task = new ProjectTask();
+            var team = new ProjectTeam();
             if (request.Id == 0)
             {
-                await _dbContext.ProjectTasks.AddAsync(task, cancellationToken);
+                await _dbContext.ProjectTeams.AddAsync(team, cancellationToken);
             }
             else
             {
-                task = await _dbContext.ProjectTasks.FindAsync(new object[] { request.Id }, cancellationToken);
+                team = await _dbContext.ProjectTeams.FindAsync(new object[] { request.Id }, cancellationToken);
             }
 
             // Ülejäänud projekti propertid ka
-            task.ProjectId = request.ProjectId;
-            task.UserId = request.UserId;
+            team.ProjectId = request.ProjectId;
+            team.UserId = request.UserId;
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 

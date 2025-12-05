@@ -32,7 +32,7 @@ namespace KooliProjekt.Application.Data
         public int? UserId { get; set; }
 
         [ForeignKey(nameof(UserId))]
-        public User User { get; set; }
+        public ProjectUser User { get; set; }
 
         [MaxLength(500)]
         [MinLength(10, ErrorMessage = "Description must be at least 10 characters.")]
@@ -42,6 +42,6 @@ namespace KooliProjekt.Application.Data
         [MaxLength(50)]
         public string Status { get; set; }
 
-        public ICollection<WorkLog> WorkLogs { get; set; }
+        public ICollection<ProjectWorkLog> WorkLogs { get; set; }
     }
 }

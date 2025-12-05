@@ -93,7 +93,7 @@ namespace KooliProjekt.Application.Data
 
                         for (var k = 0; k < 2; k++)
                         {
-                            var workLog = new WorkLog
+                            var workLog = new ProjectWorkLog
                             {
                                 Task = task,
                                 TimeSpent = 1.5m + k,
@@ -111,7 +111,7 @@ namespace KooliProjekt.Application.Data
             {
                 for (var i = 0; i < 10; i++)
                 {
-                    var user = new User
+                    var user = new ProjectUser
                     {
                         Name = "User " + (i + 1),
                         Address = "Address " + (i + 1),
