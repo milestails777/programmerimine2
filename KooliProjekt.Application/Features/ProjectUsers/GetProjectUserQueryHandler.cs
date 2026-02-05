@@ -16,8 +16,12 @@ namespace KooliProjekt.Application.Features.ProjectUsers
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public GetProjectUserQueryHandler(ApplicationDbContext dbContext)
+        public GetToDoListQueryHandler(ApplicationDbContext dbContext)
         {
+            if (dbContext == null)
+            {
+                throw new ArgumentNullException(nameof(dbContext));
+            }
             _dbContext = dbContext;
         }
 

@@ -16,8 +16,12 @@ namespace KooliProjekt.Application.Features.ProjectTeams
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public GetProjectTeamQueryHandler(ApplicationDbContext dbContext)
+        public GetToDoListQueryHandler(ApplicationDbContext dbContext)
         {
+            if (dbContext == null)
+            {
+                throw new ArgumentNullException(nameof(dbContext));
+            }
             _dbContext = dbContext;
         }
 

@@ -16,8 +16,12 @@ namespace KooliProjekt.Application.Features.ProjectWorkLogs
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public GetProjectWLQueryHandler(ApplicationDbContext dbContext)
+        public GetToDoListQueryHandler(ApplicationDbContext dbContext)
         {
+            if (dbContext == null)
+            {
+                throw new ArgumentNullException(nameof(dbContext));
+            }
             _dbContext = dbContext;
         }
 
