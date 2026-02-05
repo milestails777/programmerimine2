@@ -23,14 +23,14 @@ namespace KooliProjekt.Application.Features.ProjectUsers
         {
             var result = new OperationResult();
 
-            var team = await _dbContext.ProjectTeams.FindAsync(new object[] { request.Id }, cancellationToken);
+            var team = await _dbContext.ProjectUsers.FindAsync(new object[] { request.Id }, cancellationToken);
             if (team == null)
             {
-                result.AddError("Project team not found.");
+                result.AddError("Project user not found.");
                 return result;
             }
 
-            _dbContext.ProjectTeams.Remove(team);
+            _dbContext.ProjectUsers.Remove(team);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             return result;
