@@ -1,12 +1,9 @@
-﻿using KooliProjekt.Application.Data;
-using KooliProjekt.Application.Infrastructure.Results;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Infrastructure.Results;
+using MediatR;
 
 namespace KooliProjekt.Application.Features.Projects
 {
@@ -16,27 +13,45 @@ namespace KooliProjekt.Application.Features.Projects
 
         public SaveProjectCommandHandler(ApplicationDbContext dbContext)
         {
-            _dbContext = dbContext;
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task<OperationResult> Handle(SaveProjectCommand request, CancellationToken cancellationToken)
         {
-            var result = new OperationResult();
+            request = request ?? throw new ArgumentNullException(nameof(request));
 
-            var project = new Project();
-            if(request.Id == 0)
+            var result = new OperationResult();
+            if (request.Id < 0)
             {
-                await _dbContext.Projects.AddAsync(project, cancellationToken);
+                result.AddError("Request ID cannot be negative");
+                return result;
+            }
+
+            Project project;
+            if (request.Id == 0)
+            {
+                
+                project = new Project
+                {
+                    Name = request.Name
+                };
+
+                await _dbContext.Projects.AddAsync(project);
             }
             else
             {
-                project = await _dbContext.Projects.FindAsync(new object[] { request.Id }, cancellationToken);
+                project = await _dbContext.Projects.FindAsync(request.Id);
+                if (project == null)
+                {
+                    result.AddError("Cannot find project with ID " + request.Id);
+                    return result;
+                }
+
+               
+                project.Name = request.Name;
             }
 
-            // Ülejäänud projekti propertid ka
-            project.Name = request.Name;
-
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            await _dbContext.SaveChangesAsync();
 
             return result;
         }

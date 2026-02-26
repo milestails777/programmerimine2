@@ -1,12 +1,9 @@
-﻿using KooliProjekt.Application.Data;
-using KooliProjekt.Application.Infrastructure.Results;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Infrastructure.Results;
+using MediatR;
 
 namespace KooliProjekt.Application.Features.ProjectTasks
 {
@@ -16,28 +13,44 @@ namespace KooliProjekt.Application.Features.ProjectTasks
 
         public SaveProjectTaskCommandHandler(ApplicationDbContext dbContext)
         {
-            _dbContext = dbContext;
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task<OperationResult> Handle(SaveProjectTaskCommand request, CancellationToken cancellationToken)
         {
+            request = request ?? throw new ArgumentNullException(nameof(request));
+
             var result = new OperationResult();
+            if (request.Id < 0)
+            {
+                result.AddError("Request ID cannot be negative");
+                return result;
+            }
 
             var task = new ProjectTask();
             if (request.Id == 0)
             {
-                await _dbContext.ProjectTasks.AddAsync(task, cancellationToken);
+                
+                task.ProjectId = request.ProjectId;
+                task.UserId = request.UserId;
+
+                await _dbContext.ProjectTasks.AddAsync(task);
             }
             else
             {
-                task = await _dbContext.ProjectTasks.FindAsync(new object[] { request.Id }, cancellationToken);
+                task = await _dbContext.ProjectTasks.FindAsync(request.Id);
+                if (task == null)
+                {
+                    result.AddError("Cannot find task with ID " + request.Id);
+                    return result;
+                }
+
+                
+                task.ProjectId = request.ProjectId;
+                task.UserId = request.UserId;
             }
 
-            // Ülejäänud projekti propertid ka
-            task.ProjectId = request.ProjectId;
-            task.UserId = request.UserId;
-
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            await _dbContext.SaveChangesAsync();
 
             return result;
         }

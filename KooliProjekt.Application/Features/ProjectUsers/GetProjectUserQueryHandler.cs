@@ -1,5 +1,4 @@
 ﻿using KooliProjekt.Application.Data;
-using KooliProjekt.Application.Features.Projects;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace KooliProjekt.Application.Features.ProjectUsers
 {
-    public class GetProjectUserQueryHandler : IRequestHandler<GetProjectsQuery, OperationResult<object>>
+    public class GetProjectUserQueryHandler : IRequestHandler<GetProjectUserQuery, OperationResult<object>>
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public GetToDoListQueryHandler(ApplicationDbContext dbContext)
+        public GetProjectUserQueryHandler(ApplicationDbContext dbContext)
         {
             if (dbContext == null)
             {
@@ -25,7 +24,7 @@ namespace KooliProjekt.Application.Features.ProjectUsers
             _dbContext = dbContext;
         }
 
-        public async Task<OperationResult<object>> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
+        public async Task<OperationResult<object>> Handle(GetProjectUserQuery request, CancellationToken cancellationToken)
         {
             var result = new OperationResult<object>();
             result.Value = await _dbContext

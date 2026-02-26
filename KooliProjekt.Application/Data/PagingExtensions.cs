@@ -27,7 +27,7 @@ namespace KooliProjekt.Application.Data
             result.PageCount = (int)Math.Ceiling(pageCount);
 
             var skip = (page - 1) * pageSize;
-            result.Items = await query
+            result.Results = await query
                 .Skip(skip)
                 .Take(pageSize)
                 .ToListAsync();

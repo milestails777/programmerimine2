@@ -1,13 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using KooliProjekt.Application.Data;
 using KooliProjekt.Application.Features.ProjectWorkLogs;
+using KooliProjekt.Application.UnitTests;
 using Xunit;
 
-namespace KooliProjekt.Application.Features
+namespace KooliProjekt.Application.UnitTests.Features
 {
     public class ProjectWorkLogTests : TestBase
     {
@@ -25,7 +26,7 @@ namespace KooliProjekt.Application.Features
         {
             // Arrange
             var query = new GetProjectWLQuery { Id = 1 };
-            var workLog = new ProjectWorkLog { Title = "Test ToDo List" };
+            var workLog = new ProjectWorkLog { Description = "Test WorkLog" };
             var handler = new GetProjectWLQueryHandler(DbContext);
             await DbContext.ProjectWorkLogs.AddAsync(workLog);
             await DbContext.SaveChangesAsync();
@@ -44,7 +45,7 @@ namespace KooliProjekt.Application.Features
         {
             // Arrange
             var query = new GetProjectWLQuery { Id = 101 };
-            var workLog = new ProjectWorkLog { Title = "Test ToDo List" };
+            var workLog = new ProjectWorkLog { Description = "Test WorkLog" };
             var handler = new GetProjectWLQueryHandler(DbContext);
             await DbContext.ProjectWorkLogs.AddAsync(workLog);
             await DbContext.SaveChangesAsync();

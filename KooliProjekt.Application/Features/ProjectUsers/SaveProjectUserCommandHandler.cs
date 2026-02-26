@@ -1,12 +1,10 @@
-﻿using KooliProjekt.Application.Data;
-using KooliProjekt.Application.Infrastructure.Results;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Features.ProjectUsers;
+using KooliProjekt.Application.Infrastructure.Results;
+using MediatR;
 
 namespace KooliProjekt.Application.Features.ProjectUsers
 {
@@ -16,26 +14,42 @@ namespace KooliProjekt.Application.Features.ProjectUsers
 
         public SaveProjectUserCommandHandler(ApplicationDbContext dbContext)
         {
-            _dbContext = dbContext;
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task<OperationResult> Handle(SaveProjectUserCommand request, CancellationToken cancellationToken)
         {
-            var result = new OperationResult();
+            request = request ?? throw new ArgumentNullException(nameof(request));
 
-            var user = new ProjectUser();
+            var result = new OperationResult();
+            if (request.Id < 0)
+            {
+                result.AddError("Request ID cannot be negative");
+                return result;
+            }
+
+            var team = new ProjectTeam();
             if (request.Id == 0)
             {
-                await _dbContext.ProjectUsers.AddAsync(user, cancellationToken);
+                
+                team.ProjectId = request.ProjectId;
+                team.UserId = request.UserId;
+
+                await _dbContext.ProjectTeams.AddAsync(team, cancellationToken);
             }
             else
             {
-               user = await _dbContext.ProjectUsers.FindAsync(new object[] { request.Id }, cancellationToken);
-            }
+                team = await _dbContext.ProjectTeams.FindAsync(new object[] { request.Id }, cancellationToken);
+                if (team == null)
+                {
+                    result.AddError("Cannot find team with ID " + request.Id);
+                    return result;
+                }
 
-            // Ülejäänud projekti propertid ka
-            user.Id = request.UserId;
-            user.Id = request.UserId;
+               
+                team.ProjectId = request.ProjectId;
+                team.UserId = request.UserId;
+            }
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 

@@ -1,14 +1,12 @@
-﻿using KooliProjekt.Application.Infrastructure.Results;
+﻿using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace KooliProjekt.Application.Features.ProjectWorkLogs
 {
-    public class GetProjectWLQuery : IRequest<OperationResult<object>>, IBaseRequest
+    [ExcludeFromCodeCoverage]
+    public class GetProjectWLQuery : IRequest<OperationResult<ProjectWorkLog>>, IBaseRequest
     {
         public int Id { get; set; }
     }

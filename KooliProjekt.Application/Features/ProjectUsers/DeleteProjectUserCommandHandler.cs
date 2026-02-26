@@ -1,12 +1,12 @@
-﻿using KooliProjekt.Application.Data;
-using KooliProjekt.Application.Infrastructure.Results;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Features.Projects;
+using KooliProjekt.Application.Infrastructure.Results;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace KooliProjekt.Application.Features.ProjectUsers
 {
@@ -16,24 +16,51 @@ namespace KooliProjekt.Application.Features.ProjectUsers
 
         public DeleteProjectUserCommandHandler(ApplicationDbContext dbContext)
         {
+            if (dbContext == null)
+            {
+                throw new ArgumentNullException(nameof(dbContext));
+            }
+
             _dbContext = dbContext;
         }
 
         public async Task<OperationResult> Handle(DeleteProjectUserCommand request, CancellationToken cancellationToken)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var result = new OperationResult();
 
-            var team = await _dbContext.ProjectUsers.FindAsync(new object[] { request.Id }, cancellationToken);
-            if (team == null)
+            if (request.Id <= 0)
             {
-                result.AddError("Project user not found.");
                 return result;
             }
 
-            _dbContext.ProjectUsers.Remove(team);
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            // Kustutamine üle relatsioonide (vihje: CASCADE DELETE)
+            //await _dbContext
+            //    .ToDoLists
+            //    .Where(t => t.Id == request.Id)
+            //    .ExecuteDeleteAsync();  <-- InMemory ei toeta veel ExecuteDeleteAsync meetodit
+
+            var list = await _dbContext
+                .ProjectUsers
+                .Include(t => t.ProjectTeams)
+                .FirstOrDefaultAsync(t => t.Id == request.Id);
+
+            if (list == null)
+            {
+                return result;
+            }
+
+            _dbContext.ProjectTeams.RemoveRange(list.ProjectTeams);
+            _dbContext.ProjectUsers.Remove(list);
+
+            await _dbContext.SaveChangesAsync();
 
             return result;
         }
     }
 }
+

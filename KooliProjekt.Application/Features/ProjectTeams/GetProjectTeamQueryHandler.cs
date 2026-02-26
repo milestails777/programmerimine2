@@ -1,22 +1,19 @@
 ﻿using KooliProjekt.Application.Data;
-using KooliProjekt.Application.Features.Projects;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace KooliProjekt.Application.Features.ProjectTeams
 {
-    public class GetProjectTeamQueryHandler : IRequestHandler<GetProjectsQuery, OperationResult<object>>
+    public class GetProjectTeamQueryHandler : IRequestHandler<GetProjectTeamQuery, OperationResult<object>>
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public GetToDoListQueryHandler(ApplicationDbContext dbContext)
+        public GetProjectTeamQueryHandler(ApplicationDbContext dbContext)
         {
             if (dbContext == null)
             {
@@ -25,7 +22,7 @@ namespace KooliProjekt.Application.Features.ProjectTeams
             _dbContext = dbContext;
         }
 
-        public async Task<OperationResult<object>> Handle(GetProjectsQuery request, CancellationToken cancellationToken)
+        public async Task<OperationResult<object>> Handle(GetProjectTeamQuery request, CancellationToken cancellationToken)
         {
             var result = new OperationResult<object>();
             result.Value = await _dbContext
@@ -38,7 +35,7 @@ namespace KooliProjekt.Application.Features.ProjectTeams
                     ProjectName = list.Project.Name,
                     // veel andmeid project team kohta
                 })
-                .FirstOrDefaultAsync(cancellationToken); 
+                .FirstOrDefaultAsync(cancellationToken);
 
             return result;
         }

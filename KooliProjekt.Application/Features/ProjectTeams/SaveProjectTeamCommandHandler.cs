@@ -1,12 +1,9 @@
-﻿using KooliProjekt.Application.Data;
-using KooliProjekt.Application.Infrastructure.Results;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Infrastructure.Results;
+using MediatR;
 
 namespace KooliProjekt.Application.Features.ProjectTeams
 {
@@ -16,26 +13,42 @@ namespace KooliProjekt.Application.Features.ProjectTeams
 
         public SaveProjectTeamCommandHandler(ApplicationDbContext dbContext)
         {
-            _dbContext = dbContext;
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task<OperationResult> Handle(SaveProjectTeamCommand request, CancellationToken cancellationToken)
         {
+            request = request ?? throw new ArgumentNullException(nameof(request));
+
             var result = new OperationResult();
+            if (request.Id < 0)
+            {
+                result.AddError("Request ID cannot be negative");
+                return result;
+            }
 
             var team = new ProjectTeam();
             if (request.Id == 0)
             {
+                
+                team.ProjectId = request.ProjectId;
+                team.UserId = request.UserId;
+
                 await _dbContext.ProjectTeams.AddAsync(team, cancellationToken);
             }
             else
             {
                 team = await _dbContext.ProjectTeams.FindAsync(new object[] { request.Id }, cancellationToken);
-            }
+                if (team == null)
+                {
+                    result.AddError("Cannot find team with ID " + request.Id);
+                    return result;
+                }
 
-            // Ülejäänud projekti propertid ka
-            team.ProjectId = request.ProjectId;
-            team.UserId = request.UserId;
+                
+                team.ProjectId = request.ProjectId;
+                team.UserId = request.UserId;
+            }
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 

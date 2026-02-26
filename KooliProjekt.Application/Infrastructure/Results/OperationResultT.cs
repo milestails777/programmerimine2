@@ -1,15 +1,18 @@
-﻿namespace KooliProjekt.Application.Infrastructure.Results
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace KooliProjekt.Application.Infrastructure.Results
 {
+    [ExcludeFromCodeCoverage]
     public class OperationResult<T> : OperationResult
     {
         public T Value { get; set; }
 
         public OperationResult() { }
 
-        public OperationResult(T value) 
-        { 
+        public OperationResult(T value)
+        {
             Value = value;
-        }        
+        }
 
         public new OperationResult<T> AddError(string error)
         {
