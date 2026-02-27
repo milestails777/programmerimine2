@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using KooliProjekt.Application.Data;
-using KooliProjekt.Application.Features.ToDoLists;
+using KooliProjekt.Application.Features.Projects;
 using Xunit;
 
 namespace KooliProjekt.Application.UnitTests.Features
@@ -25,7 +25,7 @@ namespace KooliProjekt.Application.UnitTests.Features
         {
             // Arrange
             var query = new GetProjectsQuery { Id = 1 };
-            var project = new Project { Title = "Test Project" };
+            var project = new Project { Name = "Test Project" };
             var handler = new GetProjectsQueryHandler(DbContext);
             await DbContext.Projects.AddAsync(project);
             await DbContext.SaveChangesAsync();
@@ -44,9 +44,9 @@ namespace KooliProjekt.Application.UnitTests.Features
         {
             // Arrange
             var query = new GetProjectsQuery { Id = 101 };
-            var project = new Project { Title = "Test Project" };
+            var project = new Project { Name = "Test Project" };
             var handler = new GetProjectsQueryHandler(DbContext);
-            await DbContext.Projects.AddAsync(todoList);
+            await DbContext.Projects.AddAsync(project);
             await DbContext.SaveChangesAsync();
 
             // Act
