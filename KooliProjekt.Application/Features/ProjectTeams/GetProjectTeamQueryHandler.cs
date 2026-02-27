@@ -1,4 +1,5 @@
 ﻿using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Dto;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace KooliProjekt.Application.Features.ProjectTeams
 {
-    public class GetProjectTeamQueryHandler : IRequestHandler<GetProjectTeamQuery, OperationResult<object>>
+    public class GetProjectTeamQueryHandler : IRequestHandler<GetProjectTeamQuery, OperationResult<ProjectTeamDto>>
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -22,13 +23,13 @@ namespace KooliProjekt.Application.Features.ProjectTeams
             _dbContext = dbContext;
         }
 
-        public async Task<OperationResult<object>> Handle(GetProjectTeamQuery request, CancellationToken cancellationToken)
+        public async Task<OperationResult<ProjectTeamDto>> Handle(GetProjectTeamQuery request, CancellationToken cancellationToken)
         {
-            var result = new OperationResult<object>();
+            var result = new OperationResult<ProjectTeamDto>();
             result.Value = await _dbContext
                 .ProjectTeams
                 .Where(list => list.Id == request.Id)
-                .Select(list => new // Anonymous object
+                .Select(list => new ProjectTeamDto 
                 {
                     Id = list.Id,
                     ProjectId = list.ProjectId,

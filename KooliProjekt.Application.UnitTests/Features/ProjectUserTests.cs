@@ -1,14 +1,15 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using KooliProjekt.Application.Data;
-using KooliProjekt.Application.Features.ProjectWorkLogs;
+using KooliProjekt.Application.Features.ProjectUsers;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Application.UnitTests.Features
 {
-    public class ProjectWorkLogTests : TestBase
+    public class ProjectUserTests : TestBase
     {
         private ApplicationDbContext GetFaultyDbContext()
         {
@@ -19,51 +20,55 @@ namespace KooliProjekt.Application.UnitTests.Features
         }
 
         [Fact]
-        public void Get_throws_if_dbcontext_is_null()
+        public void Get_should_throw_when_dbcontext_is_null()
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                new GetProjectWLQueryHandler(null);
+                new GetProjectUserQueryHandler(null);
             });
         }
 
         [Fact]
-        public async Task Get_should_return_object_if_object_exists()
+        public async Task Get_should_return_existing_user()
         {
-            // Arrange
-            var query = new GetProjectWLQuery { Id = 1 };
-            var workLog = new ProjectWorkLog { Description = "Test WorkLog", Date = DateTime.UtcNow };
-            var handler = new GetProjectWLQueryHandler(DbContext);
-            await DbContext.ProjectWorkLogs.AddAsync(workLog);
+            var query = new GetProjectUserQuery { Id = 1 };
+            var handler = new GetProjectUserQueryHandler(DbContext);
+
+            var user = new ProjectUser { Name = "Test User", Email = "u@test.local" };
+            await DbContext.ProjectUsers.AddAsync(user);
             await DbContext.SaveChangesAsync();
 
-            // Act
             var result = await handler.Handle(query, CancellationToken.None);
 
-            // Assert
             Assert.False(result.HasErrors);
             Assert.NotNull(result.Value);
             Assert.Equal(1, result.Value.Id);
         }
 
         [Fact]
-        public async Task List_should_return_page_of_worklogs()
+        public void List_should_throw_when_dbcontext_is_null()
         {
-            // Arrange
-            var query = new ListProjectWLQuery { Page = 1, PageSize = 5 };
-            var handler = new ListProjectWLQueryHandler(DbContext);
-
-            for (var i = 1; i <= 7; i++)
+            Assert.Throws<ArgumentNullException>(() =>
             {
-                var wl = new ProjectWorkLog { Description = $"WL {i}", Date = DateTime.UtcNow, TaskId = i };
-                await DbContext.ProjectWorkLogs.AddAsync(wl);
+                new ListProjectUserQueryHandler(null);
+            });
+        }
+
+        [Fact]
+        public async Task List_should_return_page_of_users()
+        {
+            var query = new ListProjectUserQuery { Page = 1, PageSize = 5 };
+            var handler = new ListProjectUserQueryHandler(DbContext);
+
+            for (var i = 1; i <= 8; i++)
+            {
+                var user = new ProjectUser { Name = $"User {i}", Email = $"u{i}@test.local" };
+                await DbContext.ProjectUsers.AddAsync(user);
             }
             await DbContext.SaveChangesAsync();
 
-            // Act
             var result = await handler.Handle(query, CancellationToken.None);
 
-            // Assert
             Assert.NotNull(result);
             Assert.False(result.HasErrors);
             Assert.NotNull(result.Value);

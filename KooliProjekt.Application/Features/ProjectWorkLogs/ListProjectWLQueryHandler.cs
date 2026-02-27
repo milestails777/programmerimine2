@@ -33,13 +33,10 @@ namespace KooliProjekt.Application.Features.ProjectWorkLogs
 
             var query = _dbContext.ProjectWorkLogs.AsQueryable();
 
-            
             if (!string.IsNullOrWhiteSpace(request.Title))
             {
                 query = query.Where(wl => wl.Description != null && wl.Description.Contains(request.Title));
             }
-
-            
 
             result.Value = await query
                 .OrderBy(wl => wl.Date)

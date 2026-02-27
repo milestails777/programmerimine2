@@ -1,14 +1,14 @@
-﻿using KooliProjekt.Application.Data;
-using KooliProjekt.Application.Infrastructure.Paging;
-using KooliProjekt.Application.Infrastructure.Results;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Infrastructure.Paging;
+using KooliProjekt.Application.Infrastructure.Results;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Application.Features.ProjectWorkLogs
 {
@@ -27,7 +27,6 @@ namespace KooliProjekt.Application.Features.ProjectWorkLogs
 
             result.Value = await _dbContext
                 .ProjectWorkLogs
-                .Include(pt => pt.Date)
                 .Include(pt => pt.User)
                 .AsNoTracking()
                 .OrderBy(pt => pt.TaskId)
