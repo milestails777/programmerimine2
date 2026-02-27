@@ -3,15 +3,12 @@ using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace KooliProjekt.Application.Features.ProjectTasks
 {
-    public class GetProjectTaskQueryHandler : IRequestHandler<GetProjectTaskQuery, OperationResult<object>>
+    public class GetProjectTaskQueryHandler : IRequestHandler<GetProjectTaskQuery, OperationResult<ProjectTask>>
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -24,20 +21,24 @@ namespace KooliProjekt.Application.Features.ProjectTasks
             _dbContext = dbContext;
         }
 
-        public async Task<OperationResult<object>> Handle(GetProjectTaskQuery request, CancellationToken cancellationToken)
+        public async Task<OperationResult<ProjectTask>> Handle(GetProjectTaskQuery request, CancellationToken cancellationToken)
         {
-            var result = new OperationResult<object>();
+            request = request ?? throw new ArgumentNullException(nameof(request));
+
+            var result = new OperationResult<ProjectTask>();
+
+            if (request.Id <= 0)
+            {
+                // invalid id -> return empty successful result
+                return result;
+            }
+
             result.Value = await _dbContext
-                .ProjectTeams
-                .Where(list => list.Id == request.Id)
-                .Select(list => new // Anonymous object
-                {
-                    Id = list.Id,
-                    ProjectId = list.ProjectId,
-                    ProjectName = list.Project.Name,
-                    // veel andmeid project team kohta
-                })
-                .FirstOrDefaultAsync(cancellationToken); 
+                .ProjectTasks
+                .Include(t => t.Project)
+                .Include(t => t.User)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
 
             return result;
         }

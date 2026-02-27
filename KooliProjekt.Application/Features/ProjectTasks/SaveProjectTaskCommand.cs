@@ -1,22 +1,25 @@
-﻿using KooliProjekt.Application.Behaviors;
-using KooliProjekt.Application.Infrastructure.Results;
+﻿    using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KooliProjekt.Application.Features.ProjectTasks
 {
-    [ExcludeFromCodeCoverage]
-    public class SaveProjectTaskCommand : IRequest<OperationResult>, ITransactional
+    public class SaveProjectTaskCommand : IRequest<OperationResult>
     {
         public int Id { get; set; }
-        public int ProjectId { get; set; }
-        public int UserId { get; set; }
 
-        public int TaskId { get; set; }
+        public int ProjectId { get; set; }
+
+        public int? UserId { get; set; }
+
+        public string Name { get; set; }
+
+        public DateTime StartDate { get; set; }
+
+        public decimal? Price { get; set; }
+
+        public string? Description { get; set; }
+
+        public string Status { get; set; }
     }
 }

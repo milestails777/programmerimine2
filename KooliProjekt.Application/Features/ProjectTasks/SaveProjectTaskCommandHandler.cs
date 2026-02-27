@@ -27,30 +27,42 @@ namespace KooliProjekt.Application.Features.ProjectTasks
                 return result;
             }
 
-            var task = new ProjectTask();
+            ProjectTask task;
             if (request.Id == 0)
             {
-                
-                task.ProjectId = request.ProjectId;
-                task.UserId = request.UserId;
+                task = new ProjectTask
+                {
+                    ProjectId = request.ProjectId,
+                    UserId = request.UserId,
+                    Name = request.Name,
+                    StartDate = request.StartDate,
+                    Price = request.Price,
+                    Description = request.Description,
+                    Status = request.Status
+                };
 
-                await _dbContext.ProjectTasks.AddAsync(task);
+                await _dbContext.ProjectTasks.AddAsync(task, cancellationToken);
             }
             else
             {
-                task = await _dbContext.ProjectTasks.FindAsync(request.Id);
+                task = await _dbContext.ProjectTasks.FindAsync(new object[] { request.Id }, cancellationToken);
                 if (task == null)
                 {
                     result.AddError("Cannot find task with ID " + request.Id);
                     return result;
                 }
 
-                
+                // Map updated values
                 task.ProjectId = request.ProjectId;
                 task.UserId = request.UserId;
+                task.Name = request.Name;
+                task.StartDate = request.StartDate;
+                task.Price = request.Price;
+                task.Description = request.Description;
+                task.Status = request.Status;
             }
 
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return result;
         }
