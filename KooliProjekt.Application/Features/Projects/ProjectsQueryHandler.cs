@@ -16,12 +16,20 @@ namespace KooliProjekt.Application.Features.Projects
 
         public ProjectsQueryHandler(ApplicationDbContext dbContext)
         {
-            _dbContext = dbContext;
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task<OperationResult<PagedResult<Project>>> Handle(ProjectsQuery request, CancellationToken cancellationToken)
         {
+            request = request ?? throw new ArgumentNullException(nameof(request));
+
             var result = new OperationResult<PagedResult<Project>>();
+
+            if (request.Page <= 0 || request.PageSize <= 0)
+            {
+                //result.Value = new PagedResult<ProjectTeam>();
+                return result;
+            }
 
             result.Value = await _dbContext
                 .Projects

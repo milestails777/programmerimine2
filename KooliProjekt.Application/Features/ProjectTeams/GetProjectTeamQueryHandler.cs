@@ -25,6 +25,11 @@ namespace KooliProjekt.Application.Features.ProjectTeams
 
         public async Task<OperationResult<ProjectTeamDto>> Handle(GetProjectTeamQuery request, CancellationToken cancellationToken)
         {
+            if(request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var result = new OperationResult<ProjectTeamDto>();
             result.Value = await _dbContext
                 .ProjectTeams

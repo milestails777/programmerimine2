@@ -47,7 +47,7 @@ namespace KooliProjekt.Application.Features.ProjectTeams
 
             var team = await _dbContext
                 .ProjectTeams
-                .Include(t => t.ProjectId)
+                .Include(t => t.Project)
                 .FirstOrDefaultAsync(t => t.Id == request.Id);
 
             if (team == null)

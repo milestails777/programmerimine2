@@ -27,7 +27,7 @@ namespace KooliProjekt.Application.Features.ProjectTeams
 
             if (request.Page <= 0 || request.PageSize <= 0)
             {
-                result.Value = new PagedResult<ProjectTeam>();
+                //result.Value = new PagedResult<ProjectTeam>();
                 return result;
             }
 

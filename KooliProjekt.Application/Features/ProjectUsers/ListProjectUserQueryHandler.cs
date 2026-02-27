@@ -27,7 +27,7 @@ namespace KooliProjekt.Application.Features.ProjectUsers
 
             if (request.Page <= 0 || request.PageSize <= 0)
             {
-                result.Value = new PagedResult<ProjectUser>();
+                //result.Value = new PagedResult<ProjectUser>();
                 return result;
             }
 

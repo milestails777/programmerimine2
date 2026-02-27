@@ -27,6 +27,11 @@ namespace KooliProjekt.Application.Features.ProjectUsers
 
         public async Task<OperationResult<ProjectUserDto>> Handle(GetProjectUserQuery request, CancellationToken cancellationToken)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var result = new OperationResult<ProjectUserDto>();
             result.Value = await _dbContext
                 .ProjectTeams

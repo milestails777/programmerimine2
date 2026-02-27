@@ -5,6 +5,7 @@ using KooliProjekt.Application.Data;
 using KooliProjekt.Application.Features.ProjectUsers;
 using KooliProjekt.Application.Infrastructure.Results;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Application.Features.ProjectUsers
 {
@@ -28,28 +29,25 @@ namespace KooliProjekt.Application.Features.ProjectUsers
                 return result;
             }
 
-            var team = new ProjectTeam();
-            if (request.Id == 0)
+            var user = new ProjectUser();
+            if(request.Id > 0)
             {
-                
-                team.ProjectId = request.ProjectId;
-                team.UserId = request.UserId;
-
-                await _dbContext.ProjectTeams.AddAsync(team, cancellationToken);
+                user = await _dbContext.ProjectUsers.FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
+                if(user == null)
+                {
+                    result.AddError("Cannot find user with ID " + request.Id);
+                    return result;
+                }
             }
             else
             {
-                team = await _dbContext.ProjectTeams.FindAsync(new object[] { request.Id }, cancellationToken);
-                if (team == null)
-                {
-                    result.AddError("Cannot find team with ID " + request.Id);
-                    return result;
-                }
-
-               
-                team.ProjectId = request.ProjectId;
-                team.UserId = request.UserId;
+                _dbContext.ProjectUsers.Add(user);
             }
+
+            user.Address = request.Address;
+            user.Email = request.Email;
+            user.Name = request.Name;
+            user.Phone = request.Phone;
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 

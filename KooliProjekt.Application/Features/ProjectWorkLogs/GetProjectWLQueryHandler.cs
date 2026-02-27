@@ -24,6 +24,11 @@ namespace KooliProjekt.Application.Features.ProjectWorkLogs
 
         public async Task<OperationResult<ProjectWorkLog>> Handle(GetProjectWLQuery request, CancellationToken cancellationToken)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var result = new OperationResult<ProjectWorkLog>();
             result.Value = await _dbContext
                 .ProjectWorkLogs
