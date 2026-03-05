@@ -18,11 +18,11 @@ namespace KooliProjekt.WindowsForms
 
         private void LoadTodoLists()
         {
-            var url = "http://localhost:5086/api/TodoLists/List";
+            var url = "http://localhost:5086/api/Projects/List";
             url += "?page=1&pageSize=10";
 
             using var client = new HttpClient();            
-            var response = client.GetFromJsonAsync<OperationResult<PagedResult<ToDoList>>>(url).Result;
+            var response = client.GetFromJsonAsync<OperationResult<PagedResult<Project>>>(url).Result;
             dataGridView1.DataSource = response.Value.Results;
         }
     }
