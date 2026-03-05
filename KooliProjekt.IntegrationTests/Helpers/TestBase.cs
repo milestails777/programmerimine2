@@ -34,6 +34,17 @@ namespace KooliProjekt.IntegrationTests.Helpers
             }
         }
 
+        protected ProjectUser CreateTestUser()
+        {
+            return new ProjectUser 
+            { 
+                Name = "Username",
+                Address = "Testi 123",
+                Phone = "123456789",
+                Email = "test@example.com"
+            };            
+        }
+
         public void Dispose()
         {
             using var scope = Factory.Services.CreateScope();

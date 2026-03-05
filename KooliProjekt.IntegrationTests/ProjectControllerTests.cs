@@ -67,17 +67,17 @@ namespace KooliProjekt.IntegrationTests
         public async Task Delete_should_remove_existing_project()
         {
             // Arrange
-            var url = "/api/ProjectTasks/Delete/";
+            var url = "/api/ProjectTask/Delete/";
 
             var project = new Project { Name = "Test Project" };
             await DbContext.AddAsync(project);
             await DbContext.SaveChangesAsync();
 
-            var user = new ProjectUser { Name = "Test User" };
+            var user = CreateTestUser();
             await DbContext.AddAsync(user);
             await DbContext.SaveChangesAsync();
 
-            var task = new ProjectTask { User = user, Project = project };
+            var task = new ProjectTask { User = user, Project = project, Name="Test task", Description = "Description", Status="Test status" };
             await DbContext.AddAsync(task);
             await DbContext.SaveChangesAsync();
 
