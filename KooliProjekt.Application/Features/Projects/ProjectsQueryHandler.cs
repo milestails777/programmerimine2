@@ -33,7 +33,7 @@ namespace KooliProjekt.Application.Features.Projects
 
             result.Value = await _dbContext
                 .Projects
-                .Include(p => p.Tasks)
+                //.Include(p => p.Tasks)
                 .AsNoTracking()
                 .OrderBy(p => p.Name)
                 .GetPagedAsync(request.Page, request.PageSize);

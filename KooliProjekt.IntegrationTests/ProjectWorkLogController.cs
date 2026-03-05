@@ -35,7 +35,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Get_should_return_project_wl()
         {
             // Arrange
-            var url = "/api/ProjectWorkLog/Get/?id=1";
+            var url = "/api/ProjectWorkLogs/Get/?id=1";
 
             var workLog = new ProjectWorkLog { Description = "Test WorkLog" };
             await DbContext.AddAsync(workLog);
@@ -53,7 +53,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Get_should_return_not_found_for_missing_project_wl()
         {
             // Arrange
-            var url = "/api/ProjectWorkLog/Get/?id=131";
+            var url = "/api/ProjectWorkLogs/Get/?id=131";
 
             // Act
             var response = await Client.GetAsync(url);
@@ -67,13 +67,17 @@ namespace KooliProjekt.IntegrationTests
         public async Task Delete_should_remove_existing_list()
         {
             // Arrange
-            var url = "/api/ProjectWorkLog/Delete/";
+            var url = "/api/ProjectWorkLogs/Delete/";
 
             var project = new Project { Name = "Test Project" };
             await DbContext.AddAsync(project);
             await DbContext.SaveChangesAsync();
 
-            var task = new ProjectTask { Description = "Test desc", Project = project };
+            var user = CreateTestUser();
+            await DbContext.AddAsync(user);
+            await DbContext.SaveChangesAsync();
+
+            var task = new ProjectTask { User = user, Project = project, Name = "Test task", Description = "Description", Status = "Test status" };
             await DbContext.AddAsync(task);
             await DbContext.SaveChangesAsync();
 
@@ -98,7 +102,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Delete_shouldwork_with_missing_project_wl()
         {
             // Arrange
-            var url = "/api/ProjectWorkLog/Delete/";
+            var url = "/api/ProjectWorkLogs/Delete/";
 
             // Act
             using var request = new HttpRequestMessage(HttpMethod.Delete, url)
@@ -117,7 +121,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Save_should_add_new_project_wl()
         {
             // Arrange
-            var url = "/api/ProjectWorkLog/Save/";
+            var url = "/api/ProjectWorkLogs/Save/";
             var list = new SaveProjectWLCommand { Description = "Test WL" };
 
             // Act
@@ -137,7 +141,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Save_should_work_with_missing_project_wl()
         {
             // Arrange
-            var url = "/api/ProjectWorkLog/Save/";
+            var url = "/api/ProjectWorkLogs/Save/";
             var list = new SaveProjectWLCommand { Id = 10, Description = "Test desc" };
 
             // Act
@@ -157,7 +161,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Save_should_work_with_invalid_project_wl()
         {
             // Arrange
-            var url = "/api/ProjectWorkLog/Save/";
+            var url = "/api/ProjectWorkLogs/Save/";
             var workLog = new SaveProjectWLCommand { Id = 0, Description = "" };
 
             // Act

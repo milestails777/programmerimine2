@@ -17,7 +17,6 @@ namespace KooliProjekt.Application.Data
         [Required]
         public int ProjectId { get; set; }
 
-        [ForeignKey(nameof(ProjectId))]
         public Project Project { get; set; }
 
         [Required]
@@ -31,7 +30,6 @@ namespace KooliProjekt.Application.Data
 
         public int? UserId { get; set; }
 
-        [ForeignKey(nameof(UserId))]
         public ProjectUser User { get; set; }
 
         [MaxLength(500)]

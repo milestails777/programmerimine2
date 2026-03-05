@@ -21,7 +21,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Project_user_should_return_paged_result()
         {
             // Arrange
-            var url = "/api/ProjectUsers/List/?page=0&pageSize=0";
+            var url = "/api/ProjectUser/List/?page=0&pageSize=0";
 
             // Act
             var response = await Client.GetFromJsonAsync<OperationResult<PagedResult<ProjectUser>>>(url);
@@ -35,7 +35,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Get_should_return_project_user()
         {
             // Arrange
-            var url = "/api/ProjectUsers/Get/?id=1";
+            var url = "/api/ProjectUser/Get/?id=1";
 
             var user = new ProjectUser { Name = "Test User" };
             await DbContext.AddAsync(user);
@@ -53,7 +53,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Get_should_return_not_found_for_missing_project_user()
         {
             // Arrange
-            var url = "/api/ProjectUsers/Get/?id=131";
+            var url = "/api/ProjectUser/Get/?id=131";
 
             // Act
             var response = await Client.GetAsync(url);
@@ -69,11 +69,11 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
             var url = "/api/ProjectUser/Delete/";
 
-            var team = new Project { Name = "Test Project" };
-            await DbContext.AddAsync(team);
+            var project = new Project { Name = "Test Project" };
+            await DbContext.AddAsync(project);
             await DbContext.SaveChangesAsync();
 
-            var user = new ProjectUser { Name = "Test List", ProjectTeams = (ICollection<ProjectTeam>)team };
+            var user = CreateTestUser();
             await DbContext.AddAsync(user);
             await DbContext.SaveChangesAsync();
 
@@ -98,7 +98,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Delete_shouldwork_with_missing_project_user()
         {
             // Arrange
-            var url = "/api/ProjectUsers/Delete/";
+            var url = "/api/ProjectUser/Delete/";
 
             // Act
             using var request = new HttpRequestMessage(HttpMethod.Delete, url)
@@ -117,7 +117,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Save_should_add_new_project_user()
         {
             // Arrange
-            var url = "/api/ProjectWorkLog/Save/";
+            var url = "/api/ProjectUser/Save/";
             var list = new SaveProjectUserCommand { Name = "Test List" };
 
             // Act
@@ -137,7 +137,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Save_should_work_with_missing_project_user()
         {
             // Arrange
-            var url = "/api/ProjectWorkLog/Save/";
+            var url = "/api/ProjectUser/Save/";
             var list = new SaveProjectUserCommand { Id = 10, Name = "Test List" };
 
             // Act
@@ -157,7 +157,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Save_should_work_with_invalid_project_user()
         {
             // Arrange
-            var url = "/api/ProjectWorkLog/Save/";
+            var url = "/api/ProjectUser/Save/";
             var list = new SaveProjectUserCommand { Id = 0, Name = "" };
 
             // Act
