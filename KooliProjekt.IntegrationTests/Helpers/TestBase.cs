@@ -34,15 +34,48 @@ namespace KooliProjekt.IntegrationTests.Helpers
             }
         }
 
+        protected ProjectTask CreateTestTask()
+        {
+            return new ProjectTask
+            {
+                Name = "test task",
+                StartDate = DateTime.Now,
+                Description = "test description",
+                ProjectId = 1,
+                UserId = 1,
+                Status = "Not Started",                
+            };
+        }
+
         protected ProjectUser CreateTestUser()
         {
             return new ProjectUser 
             { 
                 Name = "Username",
                 Address = "Testi 123",
-                Phone = "123456789",
+                Phone = "3725543256",
                 Email = "test@example.com"
             };            
+        }
+
+        protected Project CreateTestProject()
+        {
+            return new Project
+            {
+                Name = "Test Project"
+            };
+        }
+
+        protected ProjectWorkLog CreateTestProjectWorkLog()
+        {
+            return new ProjectWorkLog 
+            { 
+                UserId = 1, 
+                TaskId = 1, 
+                Date = DateTime.Now, 
+                TimeSpent = 100, 
+                Description = "Description" 
+            };
         }
 
         public void Dispose()

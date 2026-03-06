@@ -34,14 +34,15 @@ namespace KooliProjekt.Application.Features.ProjectUsers
 
             var result = new OperationResult<ProjectUserDto>();
             result.Value = await _dbContext
-                .ProjectTeams
+                .ProjectUsers
                 .Where(list => list.Id == request.Id)
                 .Select(list => new ProjectUserDto
                 {
                     Id = list.Id,
-                    ProjectId = list.ProjectId,
-                    ProjectName = list.Project.Name,
-                    // veel andmeid project team kohta
+                    Name = list.Name,
+                    Address = list.Address,
+                    Phone = list.Phone,
+                    Email = list.Email
                 })
                 .FirstOrDefaultAsync(cancellationToken);
 

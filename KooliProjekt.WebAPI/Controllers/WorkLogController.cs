@@ -11,16 +11,17 @@ namespace KooliProjekt.WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProjectWLController : ApiControllerBase
+    public class ProjectWorkLogsController : ApiControllerBase
     {
         private readonly IMediator _mediator;
 
-        public ProjectWLController(IMediator mediator)
+        public ProjectWorkLogsController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpGet]
+        [Route("List")]
         public async Task<IActionResult> GetProjectTasks([FromQuery] ProjectWLQuery query)
         {
             var result = await _mediator.Send(query);

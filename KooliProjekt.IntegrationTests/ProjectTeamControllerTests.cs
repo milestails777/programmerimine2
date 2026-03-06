@@ -37,11 +37,13 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
             var url = "/api/ProjectTeam/Get/?id=1";
 
-            var project = new Project { Name = "Test Team" };
-            await DbContext.AddAsync(project);
+            await DbContext.AddAsync(CreateTestProject());
             await DbContext.SaveChangesAsync();
 
-            var team = new ProjectTeam { Project = project };
+            await DbContext.AddAsync(CreateTestUser());
+            await DbContext.SaveChangesAsync();
+
+            var team = new ProjectTeam { ProjectId = 1, UserId = 1 };
             await DbContext.AddAsync(team);
             await DbContext.SaveChangesAsync();
 

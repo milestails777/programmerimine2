@@ -1,9 +1,11 @@
 ﻿using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Features.ProjectTeams;
 using KooliProjekt.Application.Features.ProjectWorkLogs;
 using KooliProjekt.Application.Infrastructure.Paging;
 using KooliProjekt.Application.Infrastructure.Results;
 using KooliProjekt.IntegrationTests.Helpers;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -37,7 +39,15 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
             var url = "/api/ProjectWorkLogs/Get/?id=1";
 
-            var workLog = new ProjectWorkLog { Description = "Test WorkLog" };
+            await DbContext.AddAsync(CreateTestProject());
+            await DbContext.SaveChangesAsync();
+            await DbContext.AddAsync(CreateTestUser());
+            await DbContext.SaveChangesAsync();
+            await DbContext.AddAsync(CreateTestTask());
+            await DbContext.SaveChangesAsync();
+            
+
+            var workLog = CreateTestProjectWorkLog();
             await DbContext.AddAsync(workLog);
             await DbContext.SaveChangesAsync();
 
@@ -121,12 +131,18 @@ namespace KooliProjekt.IntegrationTests
         public async Task Save_should_add_new_project_wl()
         {
             // Arrange
-            var url = "/api/ProjectWorkLogs/Save/";
-            var list = new SaveProjectWLCommand { Description = "Test WL" };
+            var url = "/api/ProjectTeam/Save/";
+            var project = new Project { Name = "Test project" };
+            var user = new ProjectUser { Name = "Test user", Address = "123", Phone = "13245", Email = "user@example.com" };
+            var list = new SaveProjectTeamCommand { ProjectId = 1, UserId = 1 };
+
+            await DbContext.AddAsync(project);
+            await DbContext.AddAsync(user);
+            await DbContext.SaveChangesAsync();
 
             // Act
-            using var response = await Client.PostAsJsonAsync<SaveProjectWLCommand>(url, list);
-            var listFromDb = await DbContext.ProjectWorkLogs
+            using var response = await Client.PostAsJsonAsync<SaveProjectTeamCommand>(url, list);
+            var listFromDb = await DbContext.ProjectTeams
                 .Where(list => list.Id == 1)
                 .FirstOrDefaultAsync();
 
@@ -142,7 +158,7 @@ namespace KooliProjekt.IntegrationTests
         {
             // Arrange
             var url = "/api/ProjectWorkLogs/Save/";
-            var list = new SaveProjectWLCommand { Id = 10, Description = "Test desc" };
+            var list = new SaveProjectWLCommand { Description = "Test WorkLog", Date = DateTime.Now };
 
             // Act
             using var response = await Client.PostAsJsonAsync<SaveProjectWLCommand>(url, list);
@@ -162,7 +178,7 @@ namespace KooliProjekt.IntegrationTests
         {
             // Arrange
             var url = "/api/ProjectWorkLogs/Save/";
-            var workLog = new SaveProjectWLCommand { Id = 0, Description = "" };
+            var workLog = new SaveProjectWLCommand { Id = 1 };
 
             // Act
             using var response = await Client.PostAsJsonAsync<SaveProjectWLCommand>(url, workLog);

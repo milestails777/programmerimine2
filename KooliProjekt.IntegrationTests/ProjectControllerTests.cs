@@ -122,11 +122,11 @@ namespace KooliProjekt.IntegrationTests
         {
             // Arrange
             var url = "/api/Projects/Save/";
-            var project = new SaveProjectCommand { Id = 10, Name = "Test Project" };
+            var project = new SaveProjectCommand { Id = 0, Name = "Test Project" };
 
             // Act
             using var response = await Client.PostAsJsonAsync<SaveProjectCommand>(url, project);
-            var listFromDb = await DbContext.ProjectTasks
+            var listFromDb = await DbContext.Projects
                 .Where(list => list.Id == 1)
                 .FirstOrDefaultAsync();
 
@@ -162,7 +162,7 @@ namespace KooliProjekt.IntegrationTests
         {
             // Arrange
             var url = "/api/Projects/Save/";
-            var list = new SaveProjectCommand { Id = 0, Name = "Test Project" };
+            var list = new SaveProjectCommand { Id = 0 };
 
             // Act
             using var response = await Client.PostAsJsonAsync<SaveProjectCommand>(url, list);

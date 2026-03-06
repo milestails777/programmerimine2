@@ -27,8 +27,6 @@ namespace KooliProjekt.Application.Features.ProjectUsers
 
             result.Value = await _dbContext
                 .ProjectUsers
-                .Include(pt => pt.Id)
-                .Include(pt => pt.Phone)
                 .AsNoTracking()
                 .OrderBy(pt => pt.Name)
                 .GetPagedAsync(request.Page, request.PageSize);

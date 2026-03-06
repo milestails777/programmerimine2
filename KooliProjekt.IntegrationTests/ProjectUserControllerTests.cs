@@ -21,7 +21,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Project_user_should_return_paged_result()
         {
             // Arrange
-            var url = "/api/ProjectUser/List/?page=0&pageSize=0";
+            var url = "/api/ProjectUser/List/?page=1&pageSize=5";
 
             // Act
             var response = await Client.GetFromJsonAsync<OperationResult<PagedResult<ProjectUser>>>(url);
@@ -37,7 +37,7 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
             var url = "/api/ProjectUser/Get/?id=1";
 
-            var user = new ProjectUser { Name = "Test User" };
+            var user = CreateTestUser();
             await DbContext.AddAsync(user);
             await DbContext.SaveChangesAsync();
 
@@ -118,7 +118,8 @@ namespace KooliProjekt.IntegrationTests
         {
             // Arrange
             var url = "/api/ProjectUser/Save/";
-            var list = new SaveProjectUserCommand { Name = "Test List" };
+            var list = new SaveProjectUserCommand { Name = "Test List", Address = "1232143", Phone = "121123", Email = "gugugaga@example.com" };
+
 
             // Act
             using var response = await Client.PostAsJsonAsync<SaveProjectUserCommand>(url, list);

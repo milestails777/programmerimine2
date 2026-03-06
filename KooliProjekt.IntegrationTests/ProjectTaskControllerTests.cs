@@ -1,4 +1,5 @@
 ﻿using KooliProjekt.Application.Data;
+using KooliProjekt.Application.Features.Projects;
 using KooliProjekt.Application.Features.ProjectTasks;
 using KooliProjekt.Application.Infrastructure.Paging;
 using KooliProjekt.Application.Infrastructure.Results;
@@ -23,7 +24,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Project_task_should_return_paged_result()
         {
             // Arrange
-            var url = "/api/ProjectTask/List/?page=0&pageSize=0";
+            var url = "/api/ProjectTask/List/?page=1&pageSize=2";
 
             // Act
             var response = await Client.GetFromJsonAsync<OperationResult<PagedResult<ProjectTask>>>(url);
@@ -39,7 +40,10 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
             var url = "/api/ProjectTask/Get/?id=1";
 
-            var task = new ProjectTask { Name = "Test task", Description = "Description", Status = "Test status" };
+            await DbContext.AddAsync(CreateTestProject());
+            await DbContext.SaveChangesAsync();
+
+            var task = new ProjectTask { Name = "Test task", Description = "Description", Status = "Test status", ProjectId = 1 };
             await DbContext.AddAsync(task);
             await DbContext.SaveChangesAsync();
 
@@ -123,12 +127,12 @@ namespace KooliProjekt.IntegrationTests
         public async Task Save_should_add_new_project_task()
         {
             // Arrange
-            var url = "/api/ProjectTask/Save/";
-            var list = new SaveProjectTaskCommand { Id = 10, ProjectId = 0 };
+            var url = "/api/Projects/Save/";
+            var project = new SaveProjectCommand { Id = 0, Name = "Test ProjectTask" };
 
             // Act
-            using var response = await Client.PostAsJsonAsync<SaveProjectTaskCommand>(url, list);
-            var listFromDb = await DbContext.ProjectTasks
+            using var response = await Client.PostAsJsonAsync<SaveProjectCommand>(url, project);
+            var listFromDb = await DbContext.Projects
                 .Where(list => list.Id == 1)
                 .FirstOrDefaultAsync();
 
