@@ -8,5 +8,6 @@ namespace KooliProjekt.WindowsForms.Api
     {
         Task<OperationResult<PagedResult<Project>>> List(int page, int pageSize);
         Task Save(Project project);
+        Task Delete(int id);
     }
 }

@@ -33,7 +33,11 @@ namespace KooliProjekt.Application.Features.Projects
                 
                 project = new Project
                 {
-                    Name = request.Name
+                    Name = request.Name,
+                    StartDate = DateTime.UtcNow,
+                    DueDate = request.DueDate,
+                    Budget = request.Budget,
+                    PricePerHour = request.PricePerHour
                 };
 
                 await _dbContext.Projects.AddAsync(project);
@@ -46,10 +50,13 @@ namespace KooliProjekt.Application.Features.Projects
                     result.AddError("Cannot find project with ID " + request.Id);
                     return result;
                 }
-
-               
-                project.Name = request.Name;
             }
+
+            project.Name = request.Name;
+            project.StartDate = DateTime.UtcNow;
+            project.DueDate = request.DueDate;
+            project.Budget = request.Budget;
+            project.PricePerHour = request.PricePerHour;
 
             await _dbContext.SaveChangesAsync();
 

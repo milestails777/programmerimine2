@@ -21,8 +21,7 @@ namespace KooliProjekt.WindowsForms.Api
             return await _client.GetFromJsonAsync<OperationResult<PagedResult<Project>>>(url);
         }
 
-        public async Task Save(Project project
-            )
+        public async Task Save(Project project)
         {
             var url = _baseUrl + "Save";
 
@@ -31,7 +30,40 @@ namespace KooliProjekt.WindowsForms.Api
                 Content = JsonContent.Create(project)
             };
 
-            await _client.SendAsync(request);
+            var body2 = await request.Content.ReadAsStringAsync();
+
+            var response = await _client.SendAsync(request);
+            var body = await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task Add(Project project)
+        {
+            var url = _baseUrl + "Add";
+
+            var request = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = JsonContent.Create(project)
+            };
+
+            var body2 = await request.Content.ReadAsStringAsync();
+
+            var response = await _client.SendAsync(request);
+            var body = await response.Content.ReadAsStringAsync();
+        }
+
+        public async Task Delete(int id)
+        {
+            var url = _baseUrl + "Delete";
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, url)
+            {
+                Content = JsonContent.Create(new { id = id })
+            };
+
+            var body2 = await request.Content.ReadAsStringAsync();
+
+            var response = await _client.SendAsync(request);
+            var body = await response.Content.ReadAsStringAsync();
         }
     }
 }
