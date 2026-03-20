@@ -7,7 +7,7 @@ namespace KooliProjekt.WindowsForms.Api
     public interface IApiClient
     {
         Task<OperationResult<PagedResult<Project>>> List(int page, int pageSize);
-        Task Save(Project project);
-        Task Delete(int id);
+        Task<OperationResult> Save(Project project);
+        Task<OperationResult> Delete(int id);
     }
 }

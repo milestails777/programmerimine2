@@ -30,17 +30,27 @@ namespace KooliProjekt.WindowsForms
             dueDateField.Text = string.Empty;
         }
 
-        private void deletecommand_Click(object sender, EventArgs e)
+        private async void deletecommand_Click(object sender, EventArgs e)
         {
 
-            Task.Run(async () =>
+            var message = "Oled kindel, et soovid kustutada " + titleField.Text + "?";
+            var answer = MessageBox.Show(message, "Kustutamine", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (answer != DialogResult.Yes)
             {
-                await _apiClient.Delete(int.Parse(idField.Text));
-                await LoadProjects();
-            });
+                return;
+            }
+
+            var id = int.Parse(idField.Text);
+            var result = await _apiClient.Delete(id);
+            if (result.HasErrors)
+            {
+                ShowError("Viga kustutamisel", result);
+            }
+
+            await LoadProjects();
         }
 
-        private void SaveCommand_Click(object sender, EventArgs e)
+        private async void SaveCommand_Click(object sender, EventArgs e)
         {
             var project = new Project();
             project.Id = int.Parse(idField.Text);
@@ -50,11 +60,49 @@ namespace KooliProjekt.WindowsForms
             project.StartDate = DateTime.Parse(startDateField.Text);
             project.DueDate = DateTime.Parse(dueDateField.Text);
 
-            Task.Run(async () =>
+            var result = await _apiClient.Save(project);
+            if (result.HasErrors)
             {
-                await _apiClient.Save(project);
-                await LoadProjects();
-            });
+                ShowError("Viga salvestamisel", result);
+            }
+            await LoadProjects();
+        }
+
+        private void ShowError(string message, OperationResult result)
+        {
+            var error = message + "\r\n";
+            var apiErrors = "";
+            var propertyErrors = "";
+
+            if (result.Errors != null)
+            {
+                foreach (var apiError in result.Errors)
+                {
+                    apiErrors += apiError + "\r\n";
+                }
+            }
+
+            if (result.PropertyErrors != null)
+            {
+                foreach (var propertyError in result.PropertyErrors)
+                {
+                    propertyErrors += propertyError.Key + ": " + propertyError.Value;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(apiErrors))
+            {
+                error += "\r\n" + apiErrors + "\r\n";
+            }
+
+            if (!string.IsNullOrEmpty(propertyErrors))
+            {
+                error += "\r\n" + propertyErrors;
+            }
+
+            error = error.Trim();
+
+            MessageBox.Show(error, "Viga!", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         private void DataGridView1_SelectionChanged(object sender, EventArgs e)
@@ -78,19 +126,22 @@ namespace KooliProjekt.WindowsForms
             dueDateField.Text = selectedList.DueDate.ToString();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
-            Task.Run(async () => await LoadProjects());
+            await LoadProjects();
         }
 
         private async Task LoadProjects()
         {
             var response = await _apiClient.List(1, 100);
-
-            this.Invoke(() =>
+            if (response.HasErrors)
             {
-                dataGridView1.DataSource = response.Value.Results;
-            });
+                ShowError("Viga andmete laadimisel", response);
+                dataGridView1.DataSource = null;
+                return;
+            }
+
+            dataGridView1.DataSource = response.Value.Results;
         }
 
         private void saveCommand_Click_1(object sender, EventArgs e)

@@ -1,5 +1,5 @@
-﻿using System.Net;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
+using Newtonsoft.Json;
 
 namespace KooliProjekt.WindowsForms.Api
 {
@@ -17,11 +17,15 @@ namespace KooliProjekt.WindowsForms.Api
         public async Task<OperationResult<PagedResult<Project>>> List(int page, int pageSize)
         {
             var url = _baseUrl + "List?page=" + page + "&pageSize=" + pageSize;
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            using var response = await _client.SendAsync(request);
+            var body = await response.Content.ReadAsStringAsync();
 
-            return await _client.GetFromJsonAsync<OperationResult<PagedResult<Project>>>(url);
+            var result = JsonConvert.DeserializeObject<OperationResult<PagedResult<Project>>>(body);
+            return result;
         }
 
-        public async Task Save(Project project)
+        public async Task<OperationResult> Save(Project project)
         {
             var url = _baseUrl + "Save";
 
@@ -30,13 +34,14 @@ namespace KooliProjekt.WindowsForms.Api
                 Content = JsonContent.Create(project)
             };
 
-            var body2 = await request.Content.ReadAsStringAsync();
-
-            var response = await _client.SendAsync(request);
+            using var response = await _client.SendAsync(request);
             var body = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<OperationResult>(body);
+            return result;
         }
 
-        public async Task Add(Project project)
+        public async Task<OperationResult> Add(Project project)
         {
             var url = _baseUrl + "Add";
 
@@ -45,13 +50,14 @@ namespace KooliProjekt.WindowsForms.Api
                 Content = JsonContent.Create(project)
             };
 
-            var body2 = await request.Content.ReadAsStringAsync();
-
-            var response = await _client.SendAsync(request);
+            using var response = await _client.SendAsync(request);
             var body = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<OperationResult>(body);
+            return result;
         }
 
-        public async Task Delete(int id)
+        public async Task<OperationResult> Delete(int id)
         {
             var url = _baseUrl + "Delete";
 
@@ -60,10 +66,11 @@ namespace KooliProjekt.WindowsForms.Api
                 Content = JsonContent.Create(new { id = id })
             };
 
-            var body2 = await request.Content.ReadAsStringAsync();
-
-            var response = await _client.SendAsync(request);
+            using var response = await _client.SendAsync(request);
             var body = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<OperationResult>(body);
+            return result;
         }
     }
 }
