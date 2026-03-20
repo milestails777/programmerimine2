@@ -185,7 +185,7 @@
             deleteCommand.TabIndex = 15;
             deleteCommand.Text = "Kustuta";
             deleteCommand.UseVisualStyleBackColor = true;
-            deleteCommand.Click += deletecommand_Click;
+            //deletecommand.Click += deletecommand_Click;
             // 
             // Form1
             // 
