@@ -4,9 +4,7 @@ namespace KooliProjekt.WindowsForms
 {
     internal static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
+     
         [STAThread]
         static void Main()
         {
@@ -15,7 +13,11 @@ namespace KooliProjekt.WindowsForms
             ApplicationConfiguration.Initialize();
 
             IApiClient apiClient = new ApiClient();
-            Application.Run(new Form1(apiClient));
+
+            var view = new Form1(apiClient);
+            var presenter = new MainViewPresenter(apiClient, view);
+
+            Application.Run(view);
         }
     }
 }

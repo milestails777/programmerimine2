@@ -1,12 +1,43 @@
-using System.Collections;
-using System.Net.Http.Json;
 using KooliProjekt.WindowsForms.Api;
+using System.Collections;
+using System.ComponentModel;
+using System.Net.Http.Json;
 
 namespace KooliProjekt.WindowsForms
 {
-    public partial class Form1 : Form
+    public partial class Form1 : Form, IMainView
     {
         private readonly IApiClient _apiClient;
+        private MainViewPresenter _mainViewPresenter;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IList<Project> DataSource
+        {
+            get { return (IList<Project>)dataGridView1.DataSource; }
+            set { dataGridView1.DataSource = value; }
+        }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Project SelectedItem { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int CurrentId
+        {
+            get { return int.Parse(idField.Text); }
+            set { idField.Text = value.ToString(); }
+        }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public string CurrentTitle
+        {
+            get { return titleField.Text; }
+            set { titleField.Text = value; }
+        }
+
+        public void SetPresenter(MainViewPresenter presenter)
+        {
+            _mainViewPresenter = presenter;
+        }
 
         public Form1(IApiClient apiClient)
         {
@@ -176,6 +207,9 @@ namespace KooliProjekt.WindowsForms
 
         }
 
-        
+        void IMainView.ShowError(string message, OperationResult result)
+        {
+            ShowError(message, result);
+        }
     }
 }
