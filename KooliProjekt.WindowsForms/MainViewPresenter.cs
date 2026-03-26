@@ -35,12 +35,12 @@ namespace KooliProjekt.WindowsForms
             if (_selectedList == null)
             {
                 _mainView.CurrentId = 0;
-                _mainView.CurrentTitle = "";
+                _mainView.CurrentName = "";
             }
             else
             {
                 _mainView.CurrentId = _selectedList.Id;
-                _mainView.CurrentTitle = _selectedList.Name;
+                _mainView.CurrentName = _selectedList.Name;
             }
         }
     }

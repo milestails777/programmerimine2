@@ -28,10 +28,38 @@ namespace KooliProjekt.WindowsForms
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public string CurrentTitle
+        public string CurrentName
         {
             get { return titleField.Text; }
             set { titleField.Text = value; }
+        }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public decimal CurrentBudget
+        {
+            get { return decimal.Parse(budgetField.Text); }
+            set { budgetField.Text = value.ToString(); }
+        }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public decimal CurrentPricePerHour
+        {
+            get { return decimal.Parse(priceField.Text); }
+            set { priceField.Text = value.ToString(); }
+        }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public DateTime CurrentStartDate
+        {
+            get { return DateTime.Parse(startDateField.Text); }
+            set { startDateField.Text = value.ToString(); }
+        }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public DateTime CurrentDueDate
+        {
+            get { return DateTime.Parse(dueDateField.Text); }
+            set { dueDateField.Text = value.ToString(); }
         }
 
         public void SetPresenter(MainViewPresenter presenter)
@@ -78,7 +106,7 @@ namespace KooliProjekt.WindowsForms
                 ShowError("Viga kustutamisel", result);
             }
 
-            await LoadProjects();
+            await _mainViewPresenter.LoadData();
         }
 
         private async void SaveCommand_Click(object sender, EventArgs e)
@@ -96,7 +124,7 @@ namespace KooliProjekt.WindowsForms
             {
                 ShowError("Viga salvestamisel", result);
             }
-            await LoadProjects();
+            await _mainViewPresenter.LoadData();
         }
 
         private void ShowError(string message, OperationResult result)
@@ -140,14 +168,12 @@ namespace KooliProjekt.WindowsForms
         {
             if (dataGridView1.CurrentRow == null)
             {
+                _mainViewPresenter.SetSelection(null);
                 return;
             }
 
             var selectedList = (Project)dataGridView1.CurrentRow.DataBoundItem;
-            if (selectedList == null)
-            {
-                return;
-            }
+            _mainViewPresenter.SetSelection(selectedList);
 
             idField.Text = selectedList.Id.ToString();
             titleField.Text = selectedList.Name;
@@ -159,20 +185,7 @@ namespace KooliProjekt.WindowsForms
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            await LoadProjects();
-        }
-
-        private async Task LoadProjects()
-        {
-            var response = await _apiClient.List(1, 100);
-            if (response.HasErrors)
-            {
-                ShowError("Viga andmete laadimisel", response);
-                dataGridView1.DataSource = null;
-                return;
-            }
-
-            dataGridView1.DataSource = response.Value.Results;
+            await _mainViewPresenter.LoadData();
         }
 
         private void saveCommand_Click_1(object sender, EventArgs e)
@@ -188,7 +201,7 @@ namespace KooliProjekt.WindowsForms
             Task.Run(async () =>
             {
                 await _apiClient.Save(project);
-                await LoadProjects();
+                await _mainViewPresenter.LoadData();
             });
         }
 

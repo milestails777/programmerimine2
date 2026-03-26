@@ -11,6 +11,10 @@ namespace KooliProjekt.WindowsForms
         void SetPresenter(MainViewPresenter presenter);
         void ShowError(string message, OperationResult result);
         int CurrentId { get; set; }
-        string CurrentTitle { get; set; }
+        string CurrentName { get; set; }
+        DateTime CurrentStartDate { get; set; }
+        DateTime CurrentDueDate { get; set; }
+        decimal CurrentBudget { get; set; }
+        decimal CurrentPricePerHour { get; set; }
     }
 }
