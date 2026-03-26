@@ -127,7 +127,7 @@ namespace KooliProjekt.WindowsForms
             await _mainViewPresenter.LoadData();
         }
 
-        private void ShowError(string message, OperationResult result)
+        public void ShowError(string message, OperationResult result)
         {
             var error = message + "\r\n";
             var apiErrors = "";
@@ -211,11 +211,6 @@ namespace KooliProjekt.WindowsForms
         private void label6_Click(object sender, EventArgs e)
         {
 
-        }
-
-        void IMainView.ShowError(string message, OperationResult result)
-        {
-            ShowError(message, result);
         }
     }
 }
