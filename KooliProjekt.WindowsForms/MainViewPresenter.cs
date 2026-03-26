@@ -36,11 +36,19 @@ namespace KooliProjekt.WindowsForms
             {
                 _mainView.CurrentId = 0;
                 _mainView.CurrentName = "";
+                _mainView.CurrentBudget = 0;
+                _mainView.CurrentPricePerHour = 0;
+                _mainView.CurrentStartDate = DateTime.Now;
+                _mainView.CurrentDueDate = DateTime.Now;
             }
             else
             {
                 _mainView.CurrentId = _selectedList.Id;
                 _mainView.CurrentName = _selectedList.Name;
+                _mainView.CurrentBudget = _selectedList.Budget;
+                _mainView.CurrentPricePerHour = _selectedList.PricePerHour;
+                _mainView.CurrentStartDate = _selectedList.StartDate;
+                _mainView.CurrentDueDate = _selectedList.DueDate;
             }
         }
     }

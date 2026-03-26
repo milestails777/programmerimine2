@@ -174,13 +174,6 @@ namespace KooliProjekt.WindowsForms
 
             var selectedList = (Project)dataGridView1.CurrentRow.DataBoundItem;
             _mainViewPresenter.SetSelection(selectedList);
-
-            idField.Text = selectedList.Id.ToString();
-            titleField.Text = selectedList.Name;
-            budgetField.Text = selectedList.Budget.ToString();
-            priceField.Text = selectedList.PricePerHour.ToString();
-            startDateField.Text = selectedList.StartDate.ToString();
-            dueDateField.Text = selectedList.DueDate.ToString();
         }
 
         private async void Form1_Load(object sender, EventArgs e)
