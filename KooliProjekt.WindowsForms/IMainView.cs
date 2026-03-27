@@ -16,5 +16,6 @@ namespace KooliProjekt.WindowsForms
         DateTime CurrentDueDate { get; set; }
         decimal CurrentBudget { get; set; }
         decimal CurrentPricePerHour { get; set; }
+        bool ConfirmDelete();
     }
 }

@@ -50,6 +50,41 @@ namespace KooliProjekt.WindowsForms
                 _mainView.CurrentStartDate = _selectedList.StartDate;
                 _mainView.CurrentDueDate = _selectedList.DueDate;
             }
+
+
+        }
+
+        public async Task Save()
+        {
+            var project = new Project();
+            project.Id = _mainView.CurrentId;
+            project.Name = _mainView.CurrentName;
+
+            var result = await _apiClient.Save(project);
+            if (result.HasErrors)
+            {
+                _mainView.ShowError("Viga salvestamisel", result);
+                return;
+            }
+
+            await LoadData();
+        }
+
+        public async Task Delete()
+        {
+            if (!_mainView.ConfirmDelete())
+            {
+                return;
+            }
+
+            var result = await _apiClient.Delete(_mainView.CurrentId);
+            if (result.HasErrors)
+            {
+                _mainView.ShowError("Viga kustutamisel", result);
+                return;
+            }
+
+            await LoadData();
         }
     }
 }

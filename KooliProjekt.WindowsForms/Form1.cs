@@ -127,6 +127,13 @@ namespace KooliProjekt.WindowsForms
             await _mainViewPresenter.LoadData();
         }
 
+        public bool ConfirmDelete()
+        {
+            var message = "Oled kindel, et soovid kustutada " + titleField.Text + "?";
+            var answer = MessageBox.Show(message, "Kustutamine", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            return (answer == DialogResult.Yes);
+        }
+
         public void ShowError(string message, OperationResult result)
         {
             var error = message + "\r\n";
