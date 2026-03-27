@@ -59,6 +59,10 @@ namespace KooliProjekt.WindowsForms
             var project = new Project();
             project.Id = _mainView.CurrentId;
             project.Name = _mainView.CurrentName;
+            project.Budget = _mainView.CurrentBudget;
+            project.PricePerHour = _mainView.CurrentPricePerHour;
+            project.StartDate = _mainView.CurrentStartDate;
+            project.DueDate = _mainView.CurrentDueDate;
 
             var result = await _apiClient.Save(project);
             if (result.HasErrors)

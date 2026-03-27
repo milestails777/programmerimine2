@@ -81,50 +81,17 @@ namespace KooliProjekt.WindowsForms
 
         private void AddCommand_Click(object sender, EventArgs e)
         {
-            idField.Text = "0";
-            titleField.Text = string.Empty;
-            budgetField.Text = string.Empty;
-            priceField.Text = string.Empty;
-            startDateField.Text = string.Empty;
-            dueDateField.Text = string.Empty;
+            _mainViewPresenter.SetSelection(null);
         }
 
         private async void deletecommand_Click(object sender, EventArgs e)
         {
-
-            var message = "Oled kindel, et soovid kustutada " + titleField.Text + "?";
-            var answer = MessageBox.Show(message, "Kustutamine", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (answer != DialogResult.Yes)
-            {
-                return;
-            }
-
-            var id = int.Parse(idField.Text);
-            var result = await _apiClient.Delete(id);
-            if (result.HasErrors)
-            {
-                ShowError("Viga kustutamisel", result);
-            }
-
-            await _mainViewPresenter.LoadData();
+            await _mainViewPresenter.Delete();
         }
 
         private async void SaveCommand_Click(object sender, EventArgs e)
         {
-            var project = new Project();
-            project.Id = int.Parse(idField.Text);
-            project.Name = titleField.Text;
-            project.Budget = decimal.Parse(budgetField.Text);
-            project.PricePerHour = decimal.Parse(priceField.Text);
-            project.StartDate = DateTime.Parse(startDateField.Text);
-            project.DueDate = DateTime.Parse(dueDateField.Text);
-
-            var result = await _apiClient.Save(project);
-            if (result.HasErrors)
-            {
-                ShowError("Viga salvestamisel", result);
-            }
-            await _mainViewPresenter.LoadData();
+            await _mainViewPresenter.Save();
         }
 
         public bool ConfirmDelete()
@@ -188,21 +155,9 @@ namespace KooliProjekt.WindowsForms
             await _mainViewPresenter.LoadData();
         }
 
-        private void saveCommand_Click_1(object sender, EventArgs e)
+        private async void saveCommand_Click_1(object sender, EventArgs e)
         {
-            var project = new Project();
-            project.Name = titleField.Text;
-            project.Id = int.Parse(idField.Text);
-            project.Budget = decimal.Parse(budgetField.Text);
-            project.PricePerHour = decimal.Parse(priceField.Text);
-            project.StartDate = DateTime.Parse(startDateField.Text);
-            project.DueDate = DateTime.Parse(dueDateField.Text);
-
-            Task.Run(async () =>
-            {
-                await _apiClient.Save(project);
-                await _mainViewPresenter.LoadData();
-            });
+            await _mainViewPresenter.Save();
         }
 
         private void label3_Click(object sender, EventArgs e)
