@@ -9,6 +9,12 @@ namespace KooliProjekt.WindowsForms
         public Dictionary<string, string> PropertyErrors { get; set; }
         public List<string> Errors { get; set; }
 
+        public OperationResult()
+        {
+            PropertyErrors = new Dictionary<string, string>();
+            Errors = new List<string>();
+        }
+
         public bool HasErrors 
         {
             get
