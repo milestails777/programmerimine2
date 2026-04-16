@@ -11,7 +11,7 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
+
         <DataGrid x:Name="ToDoListsDataGrid" 
                   Grid.Column="0"
                   AutoGenerateColumns="True"
@@ -21,16 +21,27 @@
         <StackPanel Grid.Column="1" Margin="10">
             <TextBlock>ID</TextBlock>
             <TextBlock Text="{Binding SelectedItem.Id}"></TextBlock>
-            <TextBlock>Title</TextBlock>
-            <TextBox Text="{Binding SelectedItem.Title}"></TextBox>
-
+            <TextBlock>Name</TextBlock>
+            <TextBox Text="{Binding SelectedItem.Name}"></TextBox>
+            <TextBlock Text="Budget"/>
+            <TextBox Text="{Binding SelectedItem.Budget}"></TextBox>
+            <TextBlock Text="StartDate"/>
+            <TextBox Text="{Binding SelectedItem.StartDate}"></TextBox>
+            <TextBlock Text="DueDate"/>
+            <TextBox Text="{Binding SelectedItem.DueDate}"></TextBox>
+            <TextBlock Text="PricePerHour"/>
+            <TextBox Text="{Binding SelectedItem.PricePerHour}"></TextBox>
             <StackPanel 
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Center"
-                        Margin="10">
-                <Button Margin="5" Padding="5">New</Button>
-                <Button Margin="5" Padding="5">Save</Button>
-                <Button Margin="5" Padding="5">Delete</Button>
+                Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                Margin="10">
+                    <Button Margin="5" Padding="5" Command="{Binding AddNewCommand}">New</Button>
+                    <Button Margin="5" Padding="5" 
+                Command="{Binding SaveCommand}" 
+                CommandParameter="{Binding SelectedItem}">Save</Button>
+                <Button Margin="5" Padding="5"
+                Command="{Binding DeleteCommand}" 
+                CommandParameter="{Binding SelectedItem}">Delete</Button>
             </StackPanel>
         </StackPanel>
     </Grid>

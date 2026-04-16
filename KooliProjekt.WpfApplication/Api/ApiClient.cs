@@ -33,7 +33,7 @@ namespace KooliProjekt.WpfApplication
             using var request = new HttpRequestMessage(HttpMethod.Post, url)
             {
                 Content = JsonContent.Create(list)
-            };            
+            };
             using var response = await _client.SendAsync(request);
             var body = await response.Content.ReadAsStringAsync();
 
