@@ -1,26 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 
 namespace KooliProjekt.WpfApplication
 {
-    public class MainWindowViewModel
+    public class MainWindowViewModel : NotifyPropertyChangedBase
     {
-        public IList<Project> Data 
-        { 
-            get
-            {
-                var items = new List<Project>
-                {
-                    new Project { Id = 1, Title = "Test 1" },
-                    new Project { Id = 2, Title = "Test 2" },
-                    new Project { Id = 3, Title = "Test 3" }
-                };
+        private readonly IApiClient _apiClient;
+        private readonly ObservableCollection<Project> _data;
 
-                return items;
+        private Project _selectedItem;
+
+        public MainWindowViewModel() : this(new ApiClient())
+        {
+
+        }
+
+        public MainWindowViewModel(IApiClient apiClient)
+        {
+            _data = new ObservableCollection<Project>();
+            _apiClient = apiClient;
+        }
+
+        public async Task LoadDataAsync()
+        {
+            var data = await _apiClient.List(1, 100);
+
+            _data.Clear();
+            foreach (var item in data.Value.Results)
+            {
+                _data.Add(item);
             }
         }
 
-        public object SelectedItem { get; set; }
+        public ObservableCollection<Project> Data
+        {
+            get
+            {
+                return _data;
+            }
+        }
+
+        public Project SelectedItem
+        {
+            get
+            {
+                return _selectedItem;
+            }
+            set
+            {
+                _selectedItem = value;
+                NotifyPropertyChanged();
+            }
+        }
     }
 }
