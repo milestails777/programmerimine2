@@ -54,7 +54,8 @@ namespace KooliProjekt.WpfApplication
             DeleteCommand = new RelayCommand<Project>(
                 async project =>
                 {
-                    var canDelete = _dialogProvider.Confirm("Are you sure you want to delete this item?");
+                    // Use the two-argument Confirm overload so unit tests that setup this overload will match
+                    var canDelete = _dialogProvider.Confirm("Are you sure you want to delete this item?", "Confirm");
                     if (!canDelete)
                     {
                         return;

@@ -9,9 +9,14 @@ namespace KooliProjekt.WpfApplication
     {
         public bool Confirm(string message)
         {
+            return Confirm(message, "Confirm");
+        }
+
+        public bool Confirm(string message, string v)
+        {
             var result = MessageBox.Show(
                 message,
-                "Confirm",
+                v,
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question
             );
