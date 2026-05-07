@@ -1,11 +1,11 @@
 ﻿@page "/lists"
 @inject IApiClient apiClient
 
-<PageTitle>ToDo Lists</PageTitle>
+<PageTitle>Projects</PageTitle>
 
-<h1>ToDo Lists</h1>
+<h1>projects</h1>
 
-@if (todoLists == null)
+@if (projects == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -20,11 +20,15 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var todoList in todoLists)
+            @foreach (var project in projects)
             {
                 <tr>
-                    <td>@todoList.Id</td>
-                    <td>@todoList.Title</td>
+                    <td>@project.Id</td>
+                    <td>@project.Name</td>
+                    <td>@project.StartDate.ToShortDateString()</td>
+                    <td>@project.DueDate.ToShortDateString()</td>
+                    <td>@project.Budget</td>
+                    <td>@project.PricePerHour</td>
                     <td>
                         <button class="btn btn-success">Edit</button>
                         <button class="btn btn-danger">Delete</button>
@@ -36,11 +40,11 @@ else
 }
 
 @code {
-    private IList<Project> todoLists;
+    private IList<Project> projects;
 
     protected override async Task OnInitializedAsync()
     {
         var result = await apiClient.List(1, 100);
-        todoLists = result.Value.Results;
+        projects = result.Value.Results;
     }
 }
