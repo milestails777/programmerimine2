@@ -9,7 +9,6 @@ using Microsoft.Extensions.Hosting;
 
 namespace KooliProjekt.WebAPI
 {
-    //
     public class Program
     {
         public static void Main(string[] args)
@@ -29,6 +28,7 @@ namespace KooliProjekt.WebAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddCors();
 
             var applicationAssembly = typeof(ErrorHandlingBehavior<,>).Assembly;
             builder.Services.AddValidatorsFromAssembly(applicationAssembly);
@@ -49,19 +49,28 @@ namespace KooliProjekt.WebAPI
                 app.UseSwaggerUI();
             }
 
+            app.UseCors(
+                options => options.AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod());
+
             app.UseAuthorization();
             app.MapControllers();
 
+            // 15.11.2025
+            // Loo andmebaas kui seda pole, lisa puuduvad migratsioonid
+            // ja genereeri andmed
             using (var scope = app.Services.CreateScope())
             using (var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>())
             {
-                // Apply migrations to ensure the database schema is up-to-date
                 dbContext.Database.Migrate();
 
-                // Seed data
+                // Preprotsessori direktiiv, mis tagab, et andmete genereerimine
+                // toimub ainult arendusrežiimis
+#if DEBUG
                 var generator = new SeedData(dbContext);
                 generator.Generate();
-
+#endif
             }
 
             app.Run();
