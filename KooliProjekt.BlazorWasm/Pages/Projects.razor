@@ -11,6 +11,7 @@
 }
 else
 {
+    <p><a class="btn btn-primary" href="/create">Add new</a></p>
     <table class="table">
         <thead>
             <tr>
@@ -33,7 +34,7 @@ else
                     <td>@project.Budget</td>
                     <td>@project.PricePerHour</td>
                     <td>
-                        <button class="btn btn-success">Edit</button>
+                        <a class="btn btn-success" href="/edit/@project.Id">Edit</a>
                         <button class="btn btn-danger">Delete</button>
                     </td>
                 </tr>
